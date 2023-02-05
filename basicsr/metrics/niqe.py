@@ -1,14 +1,17 @@
 import cv2
 import math
 import numpy as np
+import os
 from scipy.ndimage.filters import convolve
 from scipy.special import gamma
 
 from basicsr.metrics.metric_util import reorder_image, to_y_channel
+from basicsr.utils.matlab_functions import imresize
+from basicsr.utils.registry import METRIC_REGISTRY
 
 
 def estimate_aggd_param(block):
-    """Estimate AGGD (Asymmetric Generalized Gaussian Distribution) paramters.
+    """Estimate AGGD (Asymmetric Generalized Gaussian Distribution) parameters.
 
     Args:
         block (ndarray): 2D Image block.
@@ -72,7 +75,7 @@ def niqe(img, mu_pris_param, cov_pris_param, gaussian_window, block_size_h=96, b
     Note that we do not include block overlap height and width, since they are
     always 0 in the official implementation.
 
-    For good performance, it is advisable by the official implemtation to
+    For good performance, it is advisable by the official implementation to
     divide the distorted image in to the same size patched as used for the
     construction of multivariate Gaussian model.
 
@@ -114,12 +117,9 @@ def niqe(img, mu_pris_param, cov_pris_param, gaussian_window, block_size_h=96, b
                 feat.append(compute_feature(block))
 
         distparam.append(np.array(feat))
-        # TODO: matlab bicubic downsample with anti-aliasing
-        # for simplicity, now we use opencv instead, which will result in
-        # a slight difference.
+
         if scale == 1:
-            h, w = img.shape
-            img = cv2.resize(img / 255., (w // 2, h // 2), interpolation=cv2.INTER_LINEAR)
+            img = imresize(img / 255., scale=0.5, antialiasing=True)
             img = img * 255.
 
     distparam = np.concatenate(distparam, axis=1)
@@ -134,17 +134,22 @@ def niqe(img, mu_pris_param, cov_pris_param, gaussian_window, block_size_h=96, b
     invcov_param = np.linalg.pinv((cov_pris_param + cov_distparam) / 2)
     quality = np.matmul(
         np.matmul((mu_pris_param - mu_distparam), invcov_param), np.transpose((mu_pris_param - mu_distparam)))
-    quality = np.sqrt(quality)
 
+    quality = np.sqrt(quality)
+    quality = float(np.squeeze(quality))
     return quality
 
 
-def calculate_niqe(img, crop_border, input_order='HWC', convert_to='y'):
+@METRIC_REGISTRY.register()
+def calculate_niqe(img, crop_border, input_order='HWC', convert_to='y', **kwargs):
     """Calculate NIQE (Natural Image Quality Evaluator) metric.
 
     Ref: Making a "Completely Blind" Image Quality Analyzer.
     This implementation could produce almost the same results as the official
     MATLAB codes: http://live.ece.utexas.edu/research/quality/niqe_release.zip
+
+    > MATLAB R2021a result for tests/data/baboon.png: 5.72957338 (5.7296)
+    > Our re-implementation result for tests/data/baboon.png: 5.7295763 (5.7296)
 
     We use the official params estimated from the pristine dataset.
     We use the recommended block size (96, 96) without overlaps.
@@ -159,15 +164,15 @@ def calculate_niqe(img, crop_border, input_order='HWC', convert_to='y'):
             pixels are not involved in the metric calculation.
         input_order (str): Whether the input order is 'HW', 'HWC' or 'CHW'.
             Default: 'HWC'.
-        convert_to (str): Whether coverted to 'y' (of MATLAB YCbCr) or 'gray'.
+        convert_to (str): Whether converted to 'y' (of MATLAB YCbCr) or 'gray'.
             Default: 'y'.
 
     Returns:
         float: NIQE result.
     """
-
+    ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
     # we use the official params estimated from the pristine dataset.
-    niqe_pris_params = np.load('basicsr/metrics/niqe_pris_params.npz')
+    niqe_pris_params = np.load(os.path.join(ROOT_DIR, 'niqe_pris_params.npz'))
     mu_pris_param = niqe_pris_params['mu_pris_param']
     cov_pris_param = niqe_pris_params['cov_pris_param']
     gaussian_window = niqe_pris_params['gaussian_window']
@@ -183,6 +188,9 @@ def calculate_niqe(img, crop_border, input_order='HWC', convert_to='y'):
 
     if crop_border != 0:
         img = img[crop_border:-crop_border, crop_border:-crop_border]
+
+    # round is necessary for being consistent with MATLAB's result
+    img = img.round()
 
     niqe_result = niqe(img, mu_pris_param, cov_pris_param, gaussian_window)
 

@@ -4,6 +4,43 @@ import time
 
 from .dist_util import get_dist_info, master_only
 
+initialized_logger = {}
+
+
+class AvgTimer():
+
+    def __init__(self, window=200):
+        self.window = window  # average window
+        self.current_time = 0
+        self.total_time = 0
+        self.count = 0
+        self.avg_time = 0
+        self.start()
+
+    def start(self):
+        self.start_time = self.tic = time.time()
+
+    def record(self):
+        self.count += 1
+        self.toc = time.time()
+        self.current_time = self.toc - self.tic
+        self.total_time += self.current_time
+        # calculate average time
+        self.avg_time = self.total_time / self.count
+
+        # reset
+        if self.count > self.window:
+            self.count = 0
+            self.total_time = 0
+
+        self.tic = time.time()
+
+    def get_current_time(self):
+        return self.current_time
+
+    def get_avg_time(self):
+        return self.avg_time
+
 
 class MessageLogger():
     """Message logger for printing.
@@ -28,6 +65,9 @@ class MessageLogger():
         self.start_time = time.time()
         self.logger = get_root_logger()
 
+    def reset_start_time(self):
+        self.start_time = time.time()
+
     @master_only
     def __call__(self, log_vars):
         """Format logging message.
@@ -46,7 +86,7 @@ class MessageLogger():
         current_iter = log_vars.pop('iter')
         lrs = log_vars.pop('lrs')
 
-        message = (f'[{self.exp_name[:5]}..][epoch:{epoch:3d}, ' f'iter:{current_iter:8,d}, lr:(')
+        message = (f'[{self.exp_name[:5]}..][epoch:{epoch:3d}, iter:{current_iter:8,d}, lr:(')
         for v in lrs:
             message += f'{v:.3e},'
         message += ')] '
@@ -86,7 +126,7 @@ def init_tb_logger(log_dir):
 def init_wandb_logger(opt):
     """We now only use wandb to sync tensorboard log."""
     import wandb
-    logger = logging.getLogger('basicsr')
+    logger = get_root_logger()
 
     project = opt['logger']['wandb']['project']
     resume_id = opt['logger']['wandb'].get('resume_id')
@@ -123,20 +163,25 @@ def get_root_logger(logger_name='basicsr', log_level=logging.INFO, log_file=None
     """
     logger = logging.getLogger(logger_name)
     # if the logger has been initialized, just return it
-    if logger.hasHandlers():
+    if logger_name in initialized_logger:
         return logger
 
     format_str = '%(asctime)s %(levelname)s: %(message)s'
-    logging.basicConfig(format=format_str, level=log_level)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(logging.Formatter(format_str))
+    logger.addHandler(stream_handler)
+    logger.propagate = False
     rank, _ = get_dist_info()
     if rank != 0:
         logger.setLevel('ERROR')
     elif log_file is not None:
+        logger.setLevel(log_level)
+        # add file handler
         file_handler = logging.FileHandler(log_file, 'w')
         file_handler.setFormatter(logging.Formatter(format_str))
         file_handler.setLevel(log_level)
         logger.addHandler(file_handler)
-
+    initialized_logger[logger_name] = True
     return logger
 
 

@@ -8,7 +8,7 @@ from os import path as osp
 
 from basicsr.archs import build_network
 from basicsr.losses import build_loss
-from basicsr.losses.losses import g_path_regularize, r1_penalty
+from basicsr.losses.gan_loss import g_path_regularize, r1_penalty
 from basicsr.utils import imwrite, tensor2img
 from basicsr.utils.registry import MODEL_REGISTRY
 from .base_model import BaseModel
@@ -50,7 +50,8 @@ class StyleGAN2Model(BaseModel):
         # load pretrained model
         load_path = self.opt['path'].get('pretrain_network_d', None)
         if load_path is not None:
-            self.load_network(self.net_d, load_path, self.opt['path'].get('strict_load_d', True))
+            param_key = self.opt['path'].get('param_key_d', 'params')
+            self.load_network(self.net_d, load_path, self.opt['path'].get('strict_load_d', True), param_key)
 
         # define network net_g with Exponential Moving Average (EMA)
         # net_g_ema only used for testing on one GPU and saving, do not need to
