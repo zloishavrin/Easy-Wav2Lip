@@ -6,7 +6,7 @@ from basicsr.archs.rrdbnet_arch import RRDBNet
 from basicsr.utils.download_util import load_file_from_url
 import numpy as np
 import torch
-
+from gfpgan import GFPGANer
 from realesrgan import RealESRGANer
 from realesrgan.archs.srvgg_arch import SRVGGNetCompact
 
@@ -34,10 +34,10 @@ def load_sr(model_path):
         pre_pad=0,
         half=True,
         gpu_id=0)
-    return upsampler
+    return upsampler, face_enhancer
 
 
-def upscale(image, upsampler):
+def upscale(image, upsampler, face_enhancer):
     img = image.astype(np.float32) / 255.
     try:
         _, _, output = face_enhancer.enhance(img, has_aligned=False, only_center_face=False, paste_back=True)
