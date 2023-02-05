@@ -17,12 +17,12 @@ def load_sr(model_path):
     netscale = 4
 
     model_path = os.path(model_path)
-    if not os.path.isfile(model_path):
-        ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-        for url in file_url:
-            # model_path will be updated
-            model_path = load_file_from_url(
-                url=url, model_dir=os.path.join(ROOT_DIR, 'weights'), progress=True, file_name=None)
+    #if not os.path.isfile(model_path):
+    #    ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+    #    for url in file_url:
+    #        # model_path will be updated
+    #        model_path = load_file_from_url(
+    #            url=url, model_dir=os.path.join(ROOT_DIR, 'weights'), progress=True, file_name=None)
 
     upsampler = RealESRGANer(
         scale=netscale,
@@ -46,8 +46,8 @@ def load_sr(model_path):
 def upscale(image, upsampler, face_enhancer):
     img = image.astype(np.float32) / 255.
     try:
-        _, _, output = face_enhancer.enhance(img, has_aligned=False, only_center_face=False, paste_back=True)
-        #output, _ = upsampler.enhance(image, outscale=4)
+        #_, _, output = face_enhancer.enhance(img, has_aligned=False, only_center_face=False, paste_back=True)
+        output, _ = upsampler.enhance(image, outscale=4)
     except RuntimeError as error:
         print('Error', error)
         print('If you encounter CUDA out of memory, try to set --tile with a smaller number.')
