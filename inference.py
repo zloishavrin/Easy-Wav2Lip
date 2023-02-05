@@ -8,7 +8,10 @@ import torch, face_detection
 from wav2lip_models import Wav2Lip
 import platform
 from face_parsing import init_parser, swap_regions
-from basicsr.apply_sr import init_sr_model, enhance
+from esrgan.upsample import upscale
+from esrgan.upsample import load_sr
+from basicsr.archs.rrdbnet_arch import RRDBNet
+from basicsr.utils.download_util import load_file_from_url
 
 parser = argparse.ArgumentParser(description='Inference code to lip-sync videos in the wild using Wav2Lip models')
 
@@ -296,7 +299,7 @@ def main():
 			seg_net = init_parser(args.segmentation_path)
 
 			print("Loading super resolution model...")
-			sr_net = init_sr_model(args.sr_path)
+			upsampler = load_sr(args.sr_path)
 
 			model = load_model(args.checkpoint_path)
 			print ("Model loaded")
@@ -326,7 +329,7 @@ def main():
 					abs_idx += 1
 
 			if not args.no_sr:
-				p = enhance(sr_net, p)
+				p = upscale(p, upsampler)
 			p = cv2.resize(p.astype(np.uint8), (x2 - x1, y2 - y1))
 			
 			if not args.no_segmentation:
