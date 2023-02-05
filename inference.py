@@ -299,7 +299,7 @@ def main():
 			seg_net = init_parser(args.segmentation_path)
 
 			print("Loading super resolution model...")
-			upsampler = load_sr(args.sr_path)
+			upsampler, face_enhancer = load_sr(args.sr_path)
 
 			model = load_model(args.checkpoint_path)
 			print ("Model loaded")
@@ -329,7 +329,7 @@ def main():
 					abs_idx += 1
 
 			if not args.no_sr:
-				p = upscale(p, upsampler)
+				p = upscale(p, upsampler, face_enhancer)
 			p = cv2.resize(p.astype(np.uint8), (x2 - x1, y2 - y1))
 			
 			if not args.no_segmentation:
