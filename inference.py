@@ -15,14 +15,14 @@ from basicsr.utils.download_util import load_file_from_url
 
 parser = argparse.ArgumentParser(description='Inference code to lip-sync videos in the wild using Wav2Lip models')
 
-parser.add_argument('--checkpoint_path', type=str, 
-					help='Name of saved checkpoint to load weights from', required=True)
+parser.add_argument('--checkpoint_path', type=str, default="checkpoints/wav2lip_gan.pth",
+					help='Name of saved checkpoint to load weights from', required=False)
 
-parser.add_argument('--segmentation_path', type=str, 
-					help='Name of saved checkpoint of segmentation network', required=True)
+parser.add_argument('--segmentation_path', type=str, default="checkpoints/face_segmentation.pth",
+					help='Name of saved checkpoint of segmentation network', required=False)
 
 parser.add_argument('--sr_path', type=str, default='weights/4x_BigFace_v3_Clear.pth', 
-					help='Name of saved checkpoint of super-resolution network', required=True)
+					help='Name of saved checkpoint of super-resolution network', required=False)
 
 parser.add_argument('--face', type=str, 
 					help='Filepath of video/image that contains faces to use', required=True)
