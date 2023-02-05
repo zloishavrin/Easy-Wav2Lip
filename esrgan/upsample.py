@@ -34,12 +34,15 @@ def load_sr(model_path):
         pre_pad=0,
         half=True,
         gpu_id=0)
-    face_enhancer = GFPGANer(
-        model_path='https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth',
-        upscale=4,
-        arch='clean',
-        channel_multiplier=2,
-        bg_upsampler=upsampler)
+    
+    #Still need to optimize for GFPGAN
+    #face_enhancer = GFPGANer(
+    #    model_path='https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth',
+    #    upscale=4,
+    #    arch='clean',
+    #    channel_multiplier=2,
+    #    bg_upsampler=upsampler)
+    face_enhancer = 0
     return upsampler, face_enhancer
 
 
