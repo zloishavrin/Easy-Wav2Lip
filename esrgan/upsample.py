@@ -10,13 +10,13 @@ import torch
 from realesrgan import RealESRGANer
 from realesrgan.archs.srvgg_arch import SRVGGNetCompact
 
-def load_sr():
-    model_name = 'RealESRGAN_x4plus'
-    file_url = ['https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth']
-    model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4)
+def load_sr(model_path):
+    #model_name = 'RealESRGAN_x4plus'
+    #file_url = ['https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth']
+    model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4) #alter to match dims as needed
     netscale = 4
 
-    model_path = os.path.join('weights', model_name + '.pth')
+    model_path = os.path(model_path)
     if not os.path.isfile(model_path):
         ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
         for url in file_url:
@@ -38,16 +38,11 @@ def load_sr():
 
 
 def upscale(image, upsampler):
-
     img = image.astype(np.float32) / 255.
-    #img = torch.from_numpy(np.transpose(img[:, :, [2, 1, 0]], (2, 0, 1))).float()
-    #img = img.unsqueeze(0).cuda()
-
     try:
         _, _, output = face_enhancer.enhance(img, has_aligned=False, only_center_face=False, paste_back=True)
         #output, _ = upsampler.enhance(image, outscale=4)
     except RuntimeError as error:
         print('Error', error)
         print('If you encounter CUDA out of memory, try to set --tile with a smaller number.')
-
     return output
