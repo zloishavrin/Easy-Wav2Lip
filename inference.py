@@ -65,7 +65,8 @@ parser.add_argument('--no_segmentation', default=False, action='store_true',
 					help='Prevent using face segmentation')
 parser.add_argument('--no_sr', default=False, action='store_true',
 					help='Prevent using super resolution')
-
+parser.add_argument('--enhance_face', default=False, action='store_true',
+					help='Use GFP-GAN to enhance facial details.')
 parser.add_argument('--save_frames', default=False, action='store_true',
 					help='Save each frame as an image. Use with caution')
 parser.add_argument('--gt_path', type=str, 
@@ -329,7 +330,10 @@ def main():
 					abs_idx += 1
 
 			if not args.no_sr:
-				p = upscale(p, upsampler, face_enhancer)
+				if args.enhance_face==True:
+					p = upscale(p, False, upsampler)
+				else:
+					p = upscale(p, True, face_enhancer)
 			p = cv2.resize(p.astype(np.uint8), (x2 - x1, y2 - y1))
 			
 			if not args.no_segmentation:
