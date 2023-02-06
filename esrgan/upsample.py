@@ -35,22 +35,23 @@ def load_sr(model_path):
         half=True,
         gpu_id=0)
     
-    #Still need to optimize for GFPGAN
-    #face_enhancer = GFPGANer(
-    #    model_path='https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth',
-    #    upscale=4,
-    #    arch='clean',
-    #    channel_multiplier=2,
-    #    bg_upsampler=upsampler)
+    face_enhancer = GFPGANer(
+        model_path='https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth',
+        upscale=4,
+        arch='clean',
+        channel_multiplier=2,
+        bg_upsampler=upsampler)
     face_enhancer = 0
     return upsampler, face_enhancer
 
 
-def upscale(image, upsampler, face_enhancer):
-    img = image.astype(np.float32) / 255.
+def upscale(image, face, properties):
     try:
-        #_, _, output = face_enhancer.enhance(img, has_aligned=False, only_center_face=False, paste_back=True)
-        output, _ = upsampler.enhance(image, outscale=4)
+        if face==True:
+            _, _, output = properties.enhance(image, has_aligned=False, only_center_face=False, paste_back=True)
+        else:
+            img = image.astype(np.float32) / 255.
+            output, _ = properties.enhance(image, outscale=4)
     except RuntimeError as error:
         print('Error', error)
         print('If you encounter CUDA out of memory, try to set --tile with a smaller number.')
