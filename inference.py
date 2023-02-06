@@ -330,7 +330,7 @@ def main():
 					abs_idx += 1
 
 			if not args.no_sr:
-				if args.enhance_face==True:
+				if args.enhance_face==False:
 					p = upscale(p, False, upsampler)
 				else:
 					p = upscale(p, True, face_enhancer)
