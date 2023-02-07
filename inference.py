@@ -63,6 +63,8 @@ parser.add_argument('--nosmooth', default=False, action='store_true',
 					help='Prevent smoothing face detections over a short temporal window')
 parser.add_argument('--no_segmentation', default=False, action='store_true',
 					help='Prevent using face segmentation')
+parser.add_argument('--no_seg', default=False, action='store_true',
+					help='Prevent using face segmentation')
 parser.add_argument('--no_sr', default=False, action='store_true',
 					help='Prevent using super resolution')
 parser.add_argument('--enhance_face', default=None, choices=['gfpgan','codeformer'],
@@ -80,7 +82,8 @@ parser.add_argument('--image_prefix', type=str, default="",
 
 args = parser.parse_args()
 args.img_size = 96
-
+if args.no_seg==True:
+	args.no_segmentation==True
 if os.path.isfile(args.face) and args.face.split('.')[1] in ['jpg', 'png', 'jpeg']:
 	args.static = True
 
@@ -296,7 +299,7 @@ def main():
 	for i, (img_batch, mel_batch, frames, coords) in enumerate(tqdm(gen, 
 											total=int(np.ceil(float(len(mel_chunks))/batch_size)))):
 		if i == 0:
-			if not args.no_seg==True:
+			if not args.no_segmentation==True:
 				print("Loading segmentation network...")
 				seg_net = init_parser(args.segmentation_path)
 			if not args.no_sr==True:
