@@ -13,46 +13,47 @@ from basicsr.utils import imwrite, img2tensor, tensor2img
 from torchvision.transforms.functional import normalize
 from basicsr.utils.registry import ARCH_REGISTRY
 
-def load_sr(model_path):
-    #model_name = 'RealESRGAN_x4plus'
-    #file_url = ['https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth']
-    model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4) #alter to match dims as needed
-    netscale = 4
+def load_sr(model_path, device, face):
+    if face==None:        
+        #model_name = 'RealESRGAN_x4plus'
+        #file_url = ['https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth']
+        model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4) #alter to match dims as needed
+        netscale = 4
 
-    model_path = os.path.normpath(model_path)
-    #if not os.path.isfile(model_path):
-    #    ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-    #    for url in file_url:
-    #        # model_path will be updated
-    #        model_path = load_file_from_url(
-    #            url=url, model_dir=os.path.join(ROOT_DIR, 'weights'), progress=True, file_name=None)
+        model_path = os.path.normpath(model_path)
+        #if not os.path.isfile(model_path):
+        #    ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+        #    for url in file_url:
+        #        # model_path will be updated
+        #        model_path = load_file_from_url(
+        #            url=url, model_dir=os.path.join(ROOT_DIR, 'weights'), progress=True, file_name=None)
 
-    upsampler = RealESRGANer(
-        scale=netscale,
-        model_path=model_path,
-        dni_weight=None,
-        model=model,
-        tile=0,
-        tile_pad=10,
-        pre_pad=0,
-        half=True,
-        gpu_id=0)
-    
-    face_enhancer = GFPGANer(
-        model_path='https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth',
-        upscale=2,
-        arch='clean',
-        channel_multiplier=2,
-        bg_upsampler=upsampler)
-    
-    net = ARCH_REGISTRY.get('CodeFormer')(dim_embd=512, codebook_size=1024, n_head=8, n_layers=9,
-                                          connect_list=['32', '64', '128', '256']).to(device)
-    ckpt_path = load_file_from_url(url='https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth',
-                                   model_dir='weights/CodeFormer', progress=True, file_name=None)
-    checkpoint = torch.load(ckpt_path)['params_ema']
-    net.load_state_dict(checkpoint)
-    net.eval()
-    return upsampler, face_enhancer, net
+        upsampler = RealESRGANer(
+            scale=netscale,
+            model_path=model_path,
+            dni_weight=None,
+            model=model,
+            tile=0,
+            tile_pad=10,
+            pre_pad=0,
+            half=True,
+            gpu_id=0)
+    elif face=='gfpgan':
+        face_enhancer = GFPGANer(
+            model_path='https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth',
+            upscale=2,
+            arch='clean',
+            channel_multiplier=2,
+            bg_upsampler=upsampler)
+    elif face=='codeformer':
+        net = ARCH_REGISTRY.get('CodeFormer')(dim_embd=512, codebook_size=1024, n_head=8, n_layers=9,
+                                              connect_list=['32', '64', '128', '256']).to(device)
+        ckpt_path = load_file_from_url(url='https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth',
+                                       model_dir='weights/CodeFormer', progress=True, file_name=None)
+        checkpoint = torch.load(ckpt_path)['params_ema']
+        net.load_state_dict(checkpoint)
+        net.eval()
+    return run_params
 
 
 def upscale(image, face, properties):
