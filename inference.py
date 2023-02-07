@@ -65,7 +65,7 @@ parser.add_argument('--no_segmentation', default=False, action='store_true',
 					help='Prevent using face segmentation')
 parser.add_argument('--no_sr', default=False, action='store_true',
 					help='Prevent using super resolution')
-parser.add_argument('--enhance_face', default=False, action='store_true',
+parser.add_argument('--enhance_face', default=None, choices=['gfpgan','codeformer'],
 					help='Use GFP-GAN to enhance facial details.')
 parser.add_argument('--save_frames', default=False, action='store_true',
 					help='Save each frame as an image. Use with caution')
@@ -300,7 +300,7 @@ def main():
 			seg_net = init_parser(args.segmentation_path)
 
 			print("Loading super resolution model...")
-			upsampler, face_enhancer = load_sr(args.sr_path)
+			upsampler, face_enhancer, net = load_sr(args.sr_path)
 
 			model = load_model(args.checkpoint_path)
 			print ("Model loaded")
@@ -330,10 +330,12 @@ def main():
 					abs_idx += 1
 
 			if not args.no_sr:
-				if args.enhance_face==False:
-					p = upscale(p, False, upsampler)
-				else:
-					p = upscale(p, True, face_enhancer)
+				if args.enhance_face==None:
+					p = upscale(p, 0, upsampler)
+				elif args.enhance_face=='codeformer':
+					p = upscale(p, 2, [net, device])
+				elif args.enhance_face=='gfpgan':
+					p = upscale(p, 1, face_enhancer)
 			p = cv2.resize(p.astype(np.uint8), (x2 - x1, y2 - y1))
 			
 			if not args.no_segmentation:
