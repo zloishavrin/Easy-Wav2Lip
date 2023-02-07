@@ -36,7 +36,7 @@ def load_sr(model_path, device, face):
             run_params=upsampler
         else:
             gfp = GFPGANer(
-                model_path='https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth',
+                model_path='https://github.com/TencentARC/GFPGAN/releases/download/v1.3.4/GFPGANv1.4.pth',
                 upscale=2,
                 arch='clean',
                 channel_multiplier=2,
