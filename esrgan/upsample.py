@@ -63,13 +63,14 @@ def upscale(image, face, properties):
         elif face==2:           ## CODEFORMER
             net = properties[0]
             device = properties[1]
+            w = properties[2]
             image = cv2.resize(image, (512, 512), interpolation=cv2.INTER_LINEAR)
             cropped_face_t = img2tensor(image / 255., bgr2rgb=True, float32=True)
             normalize(cropped_face_t, (0.5, 0.5, 0.5), (0.5, 0.5, 0.5), inplace=True)
             cropped_face_t = cropped_face_t.unsqueeze(0).to(device)
             try:
                 with torch.no_grad():
-                    cropped_face_t = net(cropped_face_t, w=1, adain=True)[0]
+                    cropped_face_t = net(cropped_face_t, w=w, adain=True)[0]
                     restored_face = tensor2img(cropped_face_t, rgb2bgr=True, min_max=(-1, 1))
                 del cropped_face_t
                 torch.cuda.empty_cache()
