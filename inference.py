@@ -61,8 +61,6 @@ parser.add_argument('--rotate', default=False, action='store_true',
 
 parser.add_argument('--nosmooth', default=False, action='store_true',
 					help='Prevent smoothing face detections over a short temporal window')
-parser.add_argument('--no_segmentation', default=False, action='store_true',
-					help='Prevent using face segmentation')
 parser.add_argument('--no_seg', default=False, action='store_true',
 					help='Prevent using face segmentation')
 parser.add_argument('--no_sr', default=False, action='store_true',
@@ -82,8 +80,7 @@ parser.add_argument('--image_prefix', type=str, default="",
 
 args = parser.parse_args()
 args.img_size = 96
-if args.no_seg==True:
-	args.no_segmentation==True
+
 if os.path.isfile(args.face) and args.face.split('.')[1] in ['jpg', 'png', 'jpeg']:
 	args.static = True
 
@@ -299,7 +296,7 @@ def main():
 	for i, (img_batch, mel_batch, frames, coords) in enumerate(tqdm(gen, 
 											total=int(np.ceil(float(len(mel_chunks))/batch_size)))):
 		if i == 0:
-			if not args.no_segmentation==True:
+			if not args.no_seg==True:
 				print("Loading segmentation network...")
 				seg_net = init_parser(args.segmentation_path)
 			if not args.no_sr==True:
@@ -342,7 +339,7 @@ def main():
 					p = upscale(p, 1, run_params)
 			p = cv2.resize(p.astype(np.uint8), (x2 - x1, y2 - y1))
 			
-			if not args.no_segmentation or args.no_seg:
+			if args.no_seg==False:
 				p = swap_regions(f[y1:y2, x1:x2], p, seg_net)
 
 			f[y1:y2, x1:x2] = p
