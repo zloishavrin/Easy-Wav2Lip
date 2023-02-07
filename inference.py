@@ -301,7 +301,7 @@ def main():
 				seg_net = init_parser(args.segmentation_path)
 			if not args.no_sr==True:
 				print("Loading super resolution model...")
-				upsampler, face_enhancer, net = load_sr(args.sr_path, device, args.enhance_face)
+				run_params = load_sr(args.sr_path, device, args.enhance_face)
 
 			model = load_model(args.checkpoint_path)
 			print ("Model loaded")
@@ -332,11 +332,11 @@ def main():
 
 			if not args.no_sr:
 				if args.enhance_face==None:
-					p = upscale(p, 0, upsampler)
+					p = upscale(p, 0, run_params)
 				elif args.enhance_face=='codeformer':
-					p = upscale(p, 2, [net, device])
+					p = upscale(p, 2, [run_params, device])
 				elif args.enhance_face=='gfpgan':
-					p = upscale(p, 1, face_enhancer)
+					p = upscale(p, 1, run_params)
 			p = cv2.resize(p.astype(np.uint8), (x2 - x1, y2 - y1))
 			
 			if not args.no_segmentation:
