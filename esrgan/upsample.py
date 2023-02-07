@@ -14,7 +14,7 @@ from torchvision.transforms.functional import normalize
 from basicsr.utils.registry import ARCH_REGISTRY
 
 def load_sr(model_path, device, face):
-    if face==None:        
+    if not face=='codeformer':
         model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4) #alter to match dims as needed
         netscale = 4
         model_path = os.path.normpath(model_path)
@@ -22,7 +22,7 @@ def load_sr(model_path, device, face):
             model_path = load_file_from_url(
                 url='https://github.com/GucciFlipFlops1917/wav2lip-hq-updated-ESRGAN/releases/download/v0.0.1/4x_BigFace_v3_Clear.pth',
                 model_dir='weights', progress=True, file_name=None)
-        run_params = RealESRGANer(
+        upsampler = RealESRGANer(
             scale=netscale,
             model_path=model_path,
             dni_weight=None,
@@ -32,14 +32,17 @@ def load_sr(model_path, device, face):
             pre_pad=0,
             half=True,
             gpu_id=0)
-    elif face=='gfpgan':
-        run_params = GFPGANer(
-            model_path='https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth',
-            upscale=2,
-            arch='clean',
-            channel_multiplier=2,
-            bg_upsampler=upsampler)
-    elif face=='codeformer':
+        if face==None:
+            run_params=upsampler
+        else:
+            gfp = GFPGANer(
+                model_path='https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth',
+                upscale=2,
+                arch='clean',
+                channel_multiplier=2,
+                bg_upsampler=upsampler)
+            run_params=gfp
+    else:
         run_params = ARCH_REGISTRY.get('CodeFormer')(dim_embd=512, codebook_size=1024, n_head=8, n_layers=9,
                                               connect_list=['32', '64', '128', '256']).to(device)
         ckpt_path = load_file_from_url(url='https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth',
