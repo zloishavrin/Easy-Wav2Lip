@@ -15,19 +15,13 @@ from basicsr.utils.registry import ARCH_REGISTRY
 
 def load_sr(model_path, device, face):
     if face==None:        
-        #model_name = 'RealESRGAN_x4plus'
-        #file_url = ['https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth']
         model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=4) #alter to match dims as needed
         netscale = 4
-
         model_path = os.path.normpath(model_path)
-        #if not os.path.isfile(model_path):
-        #    ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-        #    for url in file_url:
-        #        # model_path will be updated
-        #        model_path = load_file_from_url(
-        #            url=url, model_dir=os.path.join(ROOT_DIR, 'weights'), progress=True, file_name=None)
-
+        if not os.path.isfile(model_path):
+            model_path = load_file_from_url(
+                url='https://github.com/GucciFlipFlops1917/wav2lip-hq-updated-ESRGAN/releases/download/v0.0.1/4x_BigFace_v3_Clear.pth',
+                model_dir='weights', progress=True, file_name=None)
         run_params = RealESRGANer(
             scale=netscale,
             model_path=model_path,
