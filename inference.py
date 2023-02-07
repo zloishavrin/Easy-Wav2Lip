@@ -296,11 +296,12 @@ def main():
 	for i, (img_batch, mel_batch, frames, coords) in enumerate(tqdm(gen, 
 											total=int(np.ceil(float(len(mel_chunks))/batch_size)))):
 		if i == 0:
-			print("Loading segmentation network...")
-			seg_net = init_parser(args.segmentation_path)
-
-			print("Loading super resolution model...")
-			upsampler, face_enhancer, net = load_sr(args.sr_path)
+			if not args.no_seg==True:
+				print("Loading segmentation network...")
+				seg_net = init_parser(args.segmentation_path)
+			if not args.no_sr==True:
+				print("Loading super resolution model...")
+				upsampler, face_enhancer, net = load_sr(args.sr_path, device, args.enhance_face)
 
 			model = load_model(args.checkpoint_path)
 			print ("Model loaded")
