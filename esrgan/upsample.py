@@ -28,7 +28,7 @@ def load_sr(model_path, device, face):
         #        model_path = load_file_from_url(
         #            url=url, model_dir=os.path.join(ROOT_DIR, 'weights'), progress=True, file_name=None)
 
-        upsampler = RealESRGANer(
+        run_params = RealESRGANer(
             scale=netscale,
             model_path=model_path,
             dni_weight=None,
@@ -39,20 +39,20 @@ def load_sr(model_path, device, face):
             half=True,
             gpu_id=0)
     elif face=='gfpgan':
-        face_enhancer = GFPGANer(
+        run_params = GFPGANer(
             model_path='https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth',
             upscale=2,
             arch='clean',
             channel_multiplier=2,
             bg_upsampler=upsampler)
     elif face=='codeformer':
-        net = ARCH_REGISTRY.get('CodeFormer')(dim_embd=512, codebook_size=1024, n_head=8, n_layers=9,
+        run_params = ARCH_REGISTRY.get('CodeFormer')(dim_embd=512, codebook_size=1024, n_head=8, n_layers=9,
                                               connect_list=['32', '64', '128', '256']).to(device)
         ckpt_path = load_file_from_url(url='https://github.com/sczhou/CodeFormer/releases/download/v0.1.0/codeformer.pth',
                                        model_dir='weights/CodeFormer', progress=True, file_name=None)
         checkpoint = torch.load(ckpt_path)['params_ema']
-        net.load_state_dict(checkpoint)
-        net.eval()
+        run_params.load_state_dict(checkpoint)
+        run_params.eval()
     return run_params
 
 
