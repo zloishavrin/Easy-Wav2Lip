@@ -67,6 +67,8 @@ parser.add_argument('--no_sr', default=False, action='store_true',
 					help='Prevent using super resolution')
 parser.add_argument('--enhance_face', default=None, choices=['gfpgan','codeformer'],
 					help='Use GFP-GAN to enhance facial details.')
+parser.add_argument('-w', '--fidelity_weight', type=float, default=0.75, 
+            				help='Balance the quality and fidelity. Default: 0.5')
 parser.add_argument('--save_frames', default=False, action='store_true',
 					help='Save each frame as an image. Use with caution')
 parser.add_argument('--gt_path', type=str, 
@@ -334,7 +336,7 @@ def main():
 				if args.enhance_face==None:
 					p = upscale(p, 0, run_params)
 				elif args.enhance_face=='codeformer':
-					p = upscale(p, 2, [run_params, device])
+					p = upscale(p, 2, [run_params, device, args.w])
 				elif args.enhance_face=='gfpgan':
 					p = upscale(p, 1, run_params)
 			p = cv2.resize(p.astype(np.uint8), (x2 - x1, y2 - y1))
