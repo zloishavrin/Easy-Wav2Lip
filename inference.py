@@ -342,7 +342,7 @@ def main():
 					p = upscale(p, 1, run_params)
 			p = cv2.resize(p.astype(np.uint8), (x2 - x1, y2 - y1))
 			
-			if not args.no_segmentation:
+			if not args.no_segmentation or args.no_seg:
 				p = swap_regions(f[y1:y2, x1:x2], p, seg_net)
 
 			f[y1:y2, x1:x2] = p
