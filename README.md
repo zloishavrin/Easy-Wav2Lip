@@ -6,8 +6,7 @@ In addition to installing dependencies and downloading the necessary weights fro
 ## Usage
 Most functionality is derivative, but '--enhance_face' is a novel inclusion argument, enabling the usage of GFP-GAN or CodeFormer. Input 'gfpgan' or 'codeformer' respectively to override ESRGAN upscaling. In addition, '-w'/'--fidelity_weight' is available to control CodeFormer source fidelity, ranging from 0.0 (least like source) to 1.0 (most like source).
 
-Note: 
-
+## Notes
 •After the v0.0.1 release, all the necessary models should download automatically. However, custom or alternative ESRGAN models still require their paths to be input as arguments.
 
 •Inferencing times are currently a bit long. This is partially unavoidable due to the usage of super resolution models, but can likely be optimized and shall hopefully be part of future updates. 
