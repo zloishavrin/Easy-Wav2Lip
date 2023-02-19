@@ -11,6 +11,7 @@ Most functionality is derivative, but '--enhance_face' is a novel inclusion argu
 
 •Inferencing times are currently a bit long. This is partially unavoidable due to the usage of super resolution models, but can likely be optimized and shall hopefully be part of future updates. 
 
+•Python 3.7+ is recommended. Issues have been noted on Python 3.6 when installing dependencies.
 
 
 # Base Repo README:
