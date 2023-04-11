@@ -358,7 +358,6 @@ tabulate==0.8.10
 tb-nightly==2.13.0a20230411
 tblib==1.7.0
 tenacity==8.2.2
-tensorboard==2.12.1
 tensorboard-data-server==0.7.0
 tensorboard-plugin-wit==1.8.1
 tensorflow==2.12.0
