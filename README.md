@@ -1,5 +1,3 @@
-Make sure to click 👆 that button to copy it your own Google Drive first!
-
 # Wav2Lip-HQ made easy!
 
 GitHub: https://github.com/anothermartz/Easy-Wav2Lip
