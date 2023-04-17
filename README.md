@@ -1,8 +1,8 @@
 # Wav2Lip-HQ made easy!
 
-Colab link: https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/main/Wav2Lip_made_easy_v2.ipynb
+Colab link: https://github.com/anothermartz/Easy-Wav2Lip/blob/main/Easy-Wav2Lip_V3.ipynb
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/main/Wav2Lip_made_easy_v2.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://github.com/anothermartz/Easy-Wav2Lip/blob/main/Easy-Wav2Lip_V3.ipynb)
 
 * Forked from [wav2lip-hq-updated-ESRGAN](https://github.com/GucciFlipFlops1917/wav2lip-hq-updated-ESRGAN) by [GucciFlipFlops1917](https://github.com/GucciFlipFlops1917)
 
