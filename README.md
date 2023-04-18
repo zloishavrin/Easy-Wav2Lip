@@ -1,4 +1,4 @@
-# Wav2Lip-HQ made easy!
+# Audio to video lipsyncing made easy!
 
 Colab link: https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/main/Easy-Wav2Lip_V3.ipynb
 
