@@ -10,10 +10,10 @@ Colab link: https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/b
 
 * Which is based on the original [Wav2Lip](https://github.com/Rudrabha/Wav2Lip)
 
-Other projects called on (probably more than this but here's what I'm aware of):
-https://github.com/sczhou/CodeFormer/blob/master/README.md
-https://github.com/TencentARC/GFPGAN/blob/master/README.md
-https://github.com/xinntao/Real-ESRGAN
+Other projects called on (probably more than this but here's what I'm aware of):<br>
+https://github.com/sczhou/CodeFormer/blob/master/README.md<br>
+https://github.com/TencentARC/GFPGAN/blob/master/README.md<br>
+https://github.com/xinntao/Real-ESRGAN<br>
 
 Not only was this built on the shoulders of giants, I'm not even very good at coding and I practically used Bing AI chat to do it all for me.
 
@@ -25,7 +25,7 @@ Wav2Lip channel: https://discord.com/channels/667279414681272320/107607758433028
 Video files:
 * Must have a face in all frames or Wav2Lip will fail
 * Use h264 .mp4 - other file types may be supported but this definitely works
-* Use a small file in every way (try <720p, <60 seconds, 30fps <b></b> etc. - Bigger files may work but are usually the reason it fails)
+* Use a small file in every way (try <720p, <30 seconds, 30fps <b></b> etc. - Bigger files may work but are usually the reason it fails)
 * Start with a really tiny clip just to get used to the process, don't go throwing in a huge file for your first try.
 
 Audio files:
