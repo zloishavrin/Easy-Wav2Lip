@@ -27,12 +27,16 @@ Audio files:
 * Ideally just encode it into your video file
 * <b>OR</b>
 * Name the audio file the same as the video eg: Video.mp4 & Video.wav
-* Must be .wav
-  
-I may include support for other types later as I think Wav2Lip does, but right now the code only accounts for .wav.
+* Must be .wav (or see below for specifying custom audio inputs) 
 
-Batch processing:
+# Batch processing:
 * Name files you want to be processed in a batch ending in a number
 eg: Video1.mp4, Video2.mp4, Video3.mp4 etc. and have them all in the same folder.
 
 If you select Video3.mp4 to process, it will look for Video4.mp4 etc. afterwards.
+
+# Upscaling:
+I personally have seen the best results using gfpgan but I've only used live action videos, animated or AI videos may
+
+# Specifying an audio input:
+* If you must specify a specific audio file - in the Colab press ctrl & H to find and type #input_audio (including #) press tab, type input_audio (no #) and then click replace. This will open a box at the very bottom to allow you to specify a path to an audio (or video) file to use as your audio. I'm not sure what filetypes are supported but it's at least .wav,.mp3 and .mp4.
