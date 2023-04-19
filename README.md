@@ -45,9 +45,6 @@ I personally have seen the best results using gfpgan but I've only used live act
 
 ESRGAN can use a bunch of different models. You can find many here:
 https://upscale.wiki/wiki/Model_Database
-Paste a download url or a path within your colab runtime in ESRGAN_model to use one other than the default. Let me know if you find one that works well!
+Upload one to your Google Drive or to your colab runtime then paste the path to it in ESRGAN_model. Let me know if you find one that works well! Or even one that works at all because I've tried a few that don't.
 
 codeformer has a slider from 0 to 1 - 0 will recreate the face mostly from scratch and will not look good in motion. 1 will try to accurately make the same face as the input and so the detail won't be as good. I suggest 0.75 but you can play with it yourself.
-
-# Specifying an audio input:
-If you must specify a specific audio file - in the Colab press ctrl & H to find and type #input_audio (including #) press tab, type input_audio (no #) and then click replace. This will open a box at the very bottom to allow you to specify a path to an audio (or video) file to use as your audio. I'm not sure what filetypes are supported but it's at least .wav,.mp3 and .mp4.
