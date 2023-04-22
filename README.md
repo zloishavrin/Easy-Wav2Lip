@@ -54,6 +54,18 @@ codeformer has a slider from 0 to 1 - 0 will recreate the face mostly from scrat
 If you see hard lines on the face where the generated face meets the original face, increase the padding in that direction. Typically it happens on the chin, so increase the D value if you see that.
 Increasing these values too much can offset the mouth or cause other weird glitchyness. I've been told using minus values can help with certain videos but I personally haven't found a use case for that yet.
 
+# Batch processing:
+Name files you want to be processed in a batch ending in a number
+eg: Video1.mp4, Video2.mp4, Video3.mp4 etc. and have them all in the same folder.
+
+Same with audio files, if selected separately.
+
+If you select Video3.mp4 to process, it will look for Video4.mp4 etc. afterwards.
+
+If you select a video that doesn't end in a number, and an audio file that does, it will process each audio file on the same video. Good for static image or getting the same clip with multiple lines.
+
+Likewise, if you select a video that ends in a number and an audio file that does not, it will process the same audio file on each video. Good for getting multiple clips or images with the same line.
+
 # Other options:
 
 ### resolution_scale:
@@ -68,15 +80,3 @@ This adds a suffix to your output files so that they don't overwite your origina
 ### preview_input
 Displays the input video/audio before processing so you can check to make sure you chose the correct file(s). It may only work with .mp4, I just know it didn't work on an .avi I tried.
 Disabling this will save a few seconds of processing time for each video.
-
-# Batch processing:
-Name files you want to be processed in a batch ending in a number
-eg: Video1.mp4, Video2.mp4, Video3.mp4 etc. and have them all in the same folder.
-
-Same with audio files, if selected separately.
-
-If you select Video3.mp4 to process, it will look for Video4.mp4 etc. afterwards.
-
-If you select a video that doesn't end in a number, and an audio file that does, it will process each audio file on the same video. Good for static image or getting the same clip with multiple lines.
-
-Likewise, if you select a video that ends in a number and an audio file that does not, it will process the same audio file on each video. Good for getting multiple clips or images with the same line.
