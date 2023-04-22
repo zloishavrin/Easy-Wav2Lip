@@ -38,7 +38,9 @@ Audio files:
 * Select your audio file separately
 * Not certain what filetypes are supported, at least .wav and .mp3 though.
 
-# Upscaling:
+# Advanced Tweaking:
+
+## Upscaling:
 I personally have seen the best results using gfpgan but I've only used live action videos. Animated or AI videos may get better results using codeformer or ESRGAN.
 
 ESRGAN can use a bunch of different models. You can find many here:
@@ -47,9 +49,12 @@ Upload one to your Google Drive or to your colab runtime then paste the path to 
 
 codeformer has a slider from 0 to 1 - 0 will recreate the face mostly from scratch and will not look good in motion. 1 will try to accurately make the same face as the input and so the detail won't be as good. I suggest 0.75.
 
-# Advanced Tweaking:
-### Tweak Padding:
-Increasing the padding reduces hard lines on the face where the recreated face meets the original face but it comes at a cost of lip quality. Increase padding on the side of the face you see hard lines if you see any. It usually happens on the chin (so increase "D" if so!)
+
+## Padding:
+If you see hard lines on the face where the generated face meets the original face, increase the padding in that direction. Typically it happens on the chin, so increase the D value if you see that.
+Increasing these values too much can offset the mouth or cause other weird glitchyness. I've been told using minus values can help with certain videos but I personally haven't found a use case for that yet.
+
+# Other options:
 
 ### resolution_scale:
 Lower the output resolution for quicker rendering and better hiding of artifacts, at the cost of worse overall image quality.
