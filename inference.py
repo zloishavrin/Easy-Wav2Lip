@@ -344,7 +344,7 @@ def main():
 				elif args.enhance_face=='codeformer':
 					p = upscale(p, 2, [run_params, device, args.fidelity_weight])
 				elif args.enhance_face=='gfpgan':
-					p = upscale(p, 2, run_params)
+					p = upscale(p, 1, run_params)
 			p = cv2.resize(p.astype(np.uint8), (x2 - x1, y2 - y1))
 			
 			if args.no_seg==False:
