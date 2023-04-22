@@ -21,50 +21,51 @@ However I may offer some support in this discord:<br>
 Invite link: https://discord.gg/FNZR9ETwKY<br>
 Wav2Lip channel: https://discord.com/channels/667279414681272320/1076077584330280991
 
-# This Readme is for the upcoming v4
-v3 doesn't really need a readme so until v4 is released just look in the v3 colab for instructions
+# The rest of this Readme is for the upcoming v4 release
+v3 doesn't really need a readme so until v4 is released just look in the v3 colab for instructions - some of these options don't exist or work the same way in v3
 
 # Best practices:
 Video files:
 * Must have a face in all frames or Wav2Lip will fail
+* Crop or mask out faces you don't want to lipsync or it'll choose randomly.
 * Use h264 .mp4 - other file types may be supported but this definitely works
-* Static images should work too, at least .jpg and .png files.
+* Static images should work too, at least .jpg and .png files do.
 * Use a small file in every way (try <720p, <30 seconds, 30fps <b></b> etc. - Bigger files may work but are usually the reason it fails)
-* Start with a really tiny clip just to get used to the process, don't go throwing in a huge file for your first try.
+* Start with a really tiny clip just to get used to the process, only once you're familiar should you try bigger files to see if they work.
 
 Audio files:
-* Ideally just encode it into your video file
+* Ideally just encode it into your video file - the best results come from lining up the speech to the actions!
 * <b>OR</b>
 * Select your audio file separately
-* Not certain what filetypes are supported, at least .wav and .mp3 though.
+* I'm not certain what filetypes are supported, at least .wav and .mp3 work.
 
 # Advanced Tweaking:
 
 ## Upscaling:
-I personally have seen the best results using gfpgan but I've only used live action videos. Animated or AI videos may get better results using codeformer or ESRGAN.
+* gfpgan works best for live action videos. I personally haven't tried Animated / game / CGI / AI generated videos, so they may get better results using codeformer or ESRGAN. Let me know!
 
-ESRGAN can use a bunch of different models. You can find many here:
-https://upscale.wiki/wiki/Model_Database
-Upload one to your Google Drive or to your colab runtime then paste the path to it in ESRGAN_model. Let me know if you find one that works well! Or even one that works at all because I've tried a few that don't.
+### ESRGAN:
+You can find many different models for ESRGAN [here](https://upscale.wiki/wiki/Model_Database).
+Upload one of those to your Google Drive or to your colab runtime then paste the path to the file in ESRGAN_model. I've only tried a few and most didn't work. Let me know if you get somewhere.
 
-codeformer has a slider from 0 to 1 - 0 will recreate the face mostly from scratch and will not look good in motion. 1 will try to accurately make the same face as the input and so the detail won't be as good. I suggest 0.75.
+### codeformer:
+* codeformer_fidelity is a scale from detailed (0) to likeness to the original face (1)
+* A lower number will recreate the face more from scratch and while each frame will look better, it will not look good in motion.
+* A higher number will try to accurately make the same face as the input and so the detail won't be as good.
+* I suggest 0.75.
 
 
 ## Padding:
-If you see hard lines on the face where the generated face meets the original face, increase the padding in that direction. Typically it happens on the chin, so increase the D value if you see that.
-Increasing these values too much can offset the mouth or cause other weird glitchyness. I've been told using minus values can help with certain videos but I personally haven't found a use case for that yet.
+* If you see hard lines on the face where the generated face meets the original, increase the padding in that direction.
+* It happens most often on the chin, so increase the D value if you see that.
+* Increasing these values too much can offset the mouth or cause other weird glitchyness.
+* I've been told using minus values can help with certain videos but I personally haven't found a use case for that yet.
 
 # Batch processing:
-Name files you want to be processed in a batch ending in a number
-eg: Video1.mp4, Video2.mp4, Video3.mp4 etc. and have them all in the same folder.
-
-Same with audio files, if selected separately.
-
-If you select Video3.mp4 to process, it will look for Video4.mp4 etc. afterwards.
-
-If you select a video that doesn't end in a number, and an audio file that does, it will process each audio file on the same video. Good for static image or getting the same clip with multiple lines.
-
-Likewise, if you select a video that ends in a number and an audio file that does not, it will process the same audio file on each video. Good for getting multiple clips or images with the same line.
+* Name your files with a number at the end, eg. Video1.mp4, Video2.mp4, etc. and put them all in the same folder.
+* Files will be processed in numerical order starting from the one you select. For example, if you select Video3.mp4, it will process Video3.mp4, Video4.mp4, and so on.
+* If you select numbered video files and a non-numbered audio file, it will process each video with the same audio file. Useful for making different images/videos say the same line.
+* Likewise, if you select a non-numbered video file and numbered audio files, it will use the same video for each audio file. Useful for making the same image/video say different things.
 
 # Other options:
 
@@ -75,7 +76,7 @@ Lower the output resolution for quicker rendering and better hiding of artifacts
 Disable face detection smoothing which may fix artifacts, I'm not aware of any downsides to this.
 
 ### output_suffix
-This adds a suffix to your output files so that they don't overwite your originals. Tick include_upscaler_in_suffix if you want the upscaler written at the end of the suffix, good for when you want to compare different upscaler settuings or just to remember which one you used.
+This adds a suffix to your output files so that they don't overwite your originals. Tick include_upscaler_in_suffix if you want the upscaler written at the end of the suffix, good for when you want to compare different upscaler settings or just to remember which one you used.
 
 ### preview_input
 Displays the input video/audio before processing so you can check to make sure you chose the correct file(s). It may only work with .mp4, I just know it didn't work on an .avi I tried.
