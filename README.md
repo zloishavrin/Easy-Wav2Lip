@@ -45,7 +45,7 @@ Audio files:
 * gfpgan works best for live action videos. I personally haven't tried Animated / game / CGI / AI generated videos, so they may get better results using codeformer or ESRGAN. Let me know!
 
 ### ESRGAN:
-You can find many different models for ESRGAN [here](https://upscale.wiki/wiki/Model_Database).
+RealESRGAN_x4plus.pth is downloaded by default, but you can find many different models for ESRGAN [here](https://upscale.wiki/wiki/Model_Database).
 Upload one of those to your Google Drive or to your colab runtime then paste the path to the file in ESRGAN_model. I've only tried a few and most didn't work. Let me know if you get somewhere.
 
 ### codeformer:
