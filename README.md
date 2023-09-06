@@ -2,24 +2,19 @@ New fast version!
 
 # Audio to video lipsyncing made easy!
 
-Colab link: [https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v4/Easy_Wav2Lip_V4_fixed.ipynb](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v4/Easy_Wav2Lip_V4_fixed.ipynb)
+Colab link: [https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/Easy_Wav2Lip_Fast.ipynb](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/Easy_Wav2Lip_Fast.ipynb)
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v4/Easy_Wav2Lip_V4_fixed.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/Easy_Wav2Lip_Fast.ipynb)
 
-* Code adapted to google colab from [wav2lip-hq-updated-ESRGAN](https://github.com/GucciFlipFlops1917/wav2lip-hq-updated-ESRGAN) by [GucciFlipFlops1917](https://github.com/GucciFlipFlops1917)
+* Code adapted to google colab from [cog-Wav2Lip](https://github.com/devxpy/cog-Wav2Lip) by [devxpy](https://github.com/devxpy)
 
-* Which fixes and improves the depreciated [Wav2LipHQ](https://github.com/Markfryazino/wav2lip-hq)
+* Which is significantly faster than the original [Wav2Lip](https://github.com/Rudrabha/Wav2Lip) while ALSO giving better looking results!
 
-* Which is based on the original [Wav2Lip](https://github.com/Rudrabha/Wav2Lip)
-
-Other projects called on (probably more than this but here's what I'm aware of):<br>
-https://github.com/sczhou/CodeFormer/blob/master/README.md<br>
+Upscaling done with GFPGAN:<br>
 https://github.com/TencentARC/GFPGAN/blob/master/README.md<br>
-https://github.com/xinntao/Real-ESRGAN<br>
+Though I'm not happy with its current results.
 
-Not only was this built on the shoulders of giants, I'm not even very good at coding and I practically used Bing AI chat to do it all for me.
-
-However I may offer some support in this discord:<br>
+I may offer some support in this discord:<br>
 Invite link: https://discord.gg/FNZR9ETwKY<br>
 Wav2Lip channel: https://discord.com/channels/667279414681272320/1076077584330280991
 
@@ -41,18 +36,7 @@ Audio files:
 # Advanced Tweaking:
 
 ## Upscaling:
-* gfpgan works best for live action videos. I personally haven't tried Animated / game / CGI / AI generated videos, so they may get better results using codeformer or ESRGAN. Let me know!
-
-### ESRGAN:
-RealESRGAN_x4plus.pth is downloaded by default, but you can find many different models for ESRGAN [here](https://upscale.wiki/wiki/Model_Database).
-Upload one of those to your Google Drive or to your colab runtime then paste the path to the file in ESRGAN_model. I've only tried a few and most didn't work. Let me know if you get somewhere.
-
-### codeformer:
-* codeformer_fidelity is a scale from detailed (0) to likeness to the original face (1)
-* A lower number will recreate the face more from scratch and while each frame will look better, it will not look good in motion.
-* A higher number will try to accurately make the same face as the input and so the detail won't be as good.
-* I suggest 0.75.
-
+* Should look better with significant processing time added - I'm not happy with current results.
 
 ## Padding:
 * If you see hard lines on the face where the generated face meets the original, increase the padding in that direction.
@@ -74,8 +58,11 @@ Lower the output resolution for quicker rendering and better hiding of artifacts
 ### nosmooth:
 Disable face detection smoothing which may fix artifacts, I'm not aware of any downsides to this.
 
-### output_suffix
+### output_suffix:
 This adds a suffix to your output files so that they don't overwite your originals. Tick include_upscaler_in_suffix if you want the upscaler written at the end of the suffix, good for when you want to compare different upscaler settings or just to remember which one you used.
+
+### include_if_upscaled_in_suffix:
+This adds _gfpgan to the filename so that you can tell which ones have had upscaling done on them.
 
 ### preview_input
 Displays the input video/audio before processing so you can check to make sure you chose the correct file(s). It may only work with .mp4, I just know it didn't work on an .avi I tried.
