@@ -2,9 +2,9 @@ New fast version!
 
 # Audio to video lipsyncing made easy!
 
-Colab link: [https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/Easy_Wav2Lip_Fast.ipynb](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/Easy_Wav2Lip_Fast.ipynb)
+Colab link: [https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/EZWav2Lip_v5.ipynb](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/EZWav2Lip_v5.ipynb)
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/Easy_Wav2Lip_Fast.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/EZWav2Lip_v5.ipynb)
 
 * Code adapted to google colab from [cog-Wav2Lip](https://github.com/devxpy/cog-Wav2Lip) by [devxpy](https://github.com/devxpy)
 
