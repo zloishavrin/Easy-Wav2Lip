@@ -19,30 +19,42 @@ Invite link: https://discord.gg/FNZR9ETwKY<br>
 Wav2Lip channel: https://discord.com/channels/667279414681272320/1076077584330280991
 
 # Best practices:
+* The best results come from lining up the speech to the actions and expressions of the speaker before you send it through wav2lip!
+
 Video files:
 * Must have a face in all frames or Wav2Lip will fail
 * Crop or mask out faces you don't want to lipsync or it'll choose randomly.
-* Use h264 .mp4 - other file types may be supported but this definitely works
+* Use h264 .mp4 - other file types may be supported but this is what it outputs as
 * Static images should work too, at least .jpg and .png files do.
 * Use a small file in every way (try <720p, <30 seconds, 30fps <b></b> etc. - Bigger files may work but are usually the reason it fails)
 * Start with a really tiny clip just to get used to the process, only once you're familiar should you try bigger files to see if they work.
 
 Audio files:
-* Ideally just encode it into your video file - the best results come from lining up the speech to the actions!
+* Save as .wav and the same length as your input video.
+* NOTE: I've noticed that about 80ms gets cut from the processed video/audio and I'm not sure how to fix this, so make sure you have a little extra than what you actually need!
+* You can just encode it into your video file and leave vocal_path blank, but this will add a couple of seconds to the processing time as it splits the audio from the video
 * <b>OR</b>
 * Select your audio file separately
 * I'm not certain what filetypes are supported, at least .wav and .mp3 work.
 
 # Advanced Tweaking:
+## wav2lip_version:
+* Wav2Lip produces more accurate lipsync but can produce a missing teeth
+* Wav2Lip_GAN doesn't seem as accurate to the words being spoken but can look nicer
+* I suggest trying Wav2Lip first and switching to the GAN version if you experience an effect where it looks like the speaker has big gaps in their teeth.
 
-## Upscaling:
-* Should look better with significant processing time added - I'm not happy with current results.
+### nosmooth:
+* Disable face detection smoothing - enable by default and disable if there is lots of movement and the lips position appear to stutter.
+* Definitely enable if there are any hard cuts in the video
 
 ## Padding:
 * If you see hard lines on the face where the generated face meets the original, increase the padding in that direction.
 * It happens most often on the chin, so increase the D value if you see that.
 * Increasing these values too much can offset the mouth or cause other weird glitchyness.
-* I've been told using minus values can help with certain videos but I personally haven't found a use case for that yet.
+* If the mouth is too far to the left, put L padding in the minus and R padding in the plus, start high then go down. Apply padding accordingly for any other directions.
+
+
+# Other options:
 
 # Batch processing:
 * Name your files with a number at the end, eg. Video1.mp4, Video2.mp4, etc. and put them all in the same folder.
@@ -50,19 +62,15 @@ Audio files:
 * If you select numbered video files and a non-numbered audio file, it will process each video with the same audio file. Useful for making different images/videos say the same line.
 * Likewise, if you select a non-numbered video file and numbered audio files, it will use the same video for each audio file. Useful for making the same image/video say different things.
 
-# Other options:
-
-### resolution_scale:
-Lower the output resolution for quicker rendering and better hiding of artifacts, at the cost of worse overall image quality.
-
-### nosmooth:
-Disable face detection smoothing which may fix artifacts, I'm not aware of any downsides to this.
 
 ### output_suffix:
-This adds a suffix to your output files so that they don't overwite your originals. Tick include_upscaler_in_suffix if you want the upscaler written at the end of the suffix, good for when you want to compare different upscaler settings or just to remember which one you used.
+This adds a suffix to your output files so that they don't overwite your originals.
 
-### include_if_upscaled_in_suffix:
-This adds _gfpgan to the filename so that you can tell which ones have had upscaling done on them.
+### include_settings_in_suffix:
+Adds what settings were used - good for comparing different settings as you will know what you used for each render.
+Will add: Qualty_resolution_nosmooth_pads-UDLR
+EG: _Enhanced_720_nosmooth1_pads-U15D10L-15R30
+pads_UDLR will not be included if they are set to 0.
 
 ### preview_input
 Displays the input video/audio before processing so you can check to make sure you chose the correct file(s). It may only work with .mp4, I just know it didn't work on an .avi I tried.
