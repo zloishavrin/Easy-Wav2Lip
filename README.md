@@ -14,6 +14,7 @@ Upscaling done with GFPGAN:<br>
 https://github.com/TencentARC/GFPGAN/blob/master/README.md<br>
 Though I'm not happy with its current results.
 
+# Support
 I may offer some support in this discord:<br>
 Invite link: https://discord.gg/FNZR9ETwKY<br>
 Wav2Lip channel: https://discord.com/channels/667279414681272320/1076077584330280991
