@@ -2,6 +2,9 @@ New fast version!
 
 # Audio to video lipsyncing made easy!
 
+### Please note this is a Google Colab project only!
+I want to adapt it to run locally eventually but right now it only works on colab.
+
 Colab link: [https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/EZWav2Lip_v6.ipynb](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/EZWav2Lip_v6.ipynb)
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/EZWav2Lip_v6.ipynb)
