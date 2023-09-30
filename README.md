@@ -2,9 +2,9 @@ New fast version!
 
 # Audio to video lipsyncing made easy!
 
-Colab link: [https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/EZWav2Lip_v5.ipynb](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/EZWav2Lip_v5.ipynb)
+Colab link: [https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/EZWav2Lip_v6.ipynb](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/EZWav2Lip_v6.ipynb)
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/EZWav2Lip_v5.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/Fast/EZWav2Lip_v6.ipynb)
 
 * Code adapted to google colab from [cog-Wav2Lip](https://github.com/devxpy/cog-Wav2Lip) by [devxpy](https://github.com/devxpy)
 
@@ -53,7 +53,12 @@ Audio files:
 * It happens most often on the chin, so increase the D value if you see that.
 * Increasing these values too much can offset the mouth or cause other weird glitchyness.
 * If the mouth is too far to the left, put L padding in the minus and R padding in the plus, start high then go down. Apply padding accordingly for any other directions.
+* v7 will simplify padding to become mouth size and offset as that's basically what the result is.
 
+## Mask (new!):
+* For Improved and Enhanced quality options, the mask reduces the size of the processed videos to an area around the mouth.
+* size will increase the size of the area that the mask covers and feathering determins the amount of blending between the centre of the mask and the edges.
+* debug_mask will render the background in grayscale and the mask in colour so that you can easily see where the mask is in the frame.
 
 # Other options:
 
@@ -63,7 +68,6 @@ Audio files:
 * If you select numbered video files and a non-numbered audio file, it will process each video with the same audio file. Useful for making different images/videos say the same line.
 * Likewise, if you select a non-numbered video file and numbered audio files, it will use the same video for each audio file. Useful for making the same image/video say different things.
 
-
 ### output_suffix:
 This adds a suffix to your output files so that they don't overwite your originals.
 
@@ -72,7 +76,12 @@ Adds what settings were used - good for comparing different settings as you will
 Will add: Qualty_resolution_nosmooth_pads-UDLR
 EG: _Enhanced_720_nosmooth1_pads-U15D10L-15R30
 pads_UDLR will not be included if they are set to 0.
+resolution will not be included if it output_height is set to full resolution
 
 ### preview_input
 Displays the input video/audio before processing so you can check to make sure you chose the correct file(s). It may only work with .mp4, I just know it didn't work on an .avi I tried.
 Disabling this will save a few seconds of processing time for each video.
+
+### preview_settings (new!)
+This will render only 1 frame of your video and display it at full size, this is so you can tweak the settings without having to render the entire video each time.
+frame_to_preview is for selecting a particular frame you want to check out.
