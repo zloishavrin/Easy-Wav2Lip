@@ -35,7 +35,7 @@ print('\rwarnings', end='')
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module='torchvision.transforms.functional_tensor')
 print('\rupscale, load_sr', end='')
-from esrgan.upsample import upscale, load_sr
+from enhance import upscale, load_sr
 print('\rimports loaded!')
 
 device='cuda'
