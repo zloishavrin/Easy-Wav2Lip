@@ -114,7 +114,7 @@ with open('face_detection/mouth_detector.pkl', 'rb') as f:
 
 #creating variables to prevent failing when a face isn't detected
 kernel = last_mask = x = y = w = h = None
-def create_mask(img, original_img): 
+def create_mask(img, original_img,run_params): 
   global kernel, last_mask, x, y, w, h  # Add last_mask to global variables
   
    # Convert color space from BGR to RGB if necessary 
@@ -157,6 +157,28 @@ def create_mask(img, original_img):
   # Dilate the mask
   dilated_mask = cv2.dilate(mask, kernel)
 
+  # Find contours in the dilated mask
+  contours, _ = cv2.findContours(dilated_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+  # Find bounding box coordinates for each contour
+  for contour in contours:
+    x_dilated, y_dilated, w_dilated, h_dilated = cv2.boundingRect(contour)
+
+    # Crop the image to the bounding box of the dilated mask
+    cropped_img = img[y_dilated:y_dilated+h_dilated, x_dilated:x_dilated+w_dilated]
+
+    # Save the cropped image here
+    cv2.imwrite('temp/cp.jpg', cropped_img)
+
+    # Upscale the cropped image
+    upscaled_img = upscale(cropped_img, run_params)
+
+    cv2.imwrite('temp/ucp.jpg', upscaled_img)
+
+    # Paste the upscaled image back onto the original image
+    img[y_dilated:y_dilated+h_dilated, x_dilated:x_dilated+w_dilated] = upscaled_img
+
+
   # Calculate distance transform of dilated mask
   dist_transform = cv2.distanceTransform(dilated_mask, cv2.DIST_L2, 5)
 
@@ -193,7 +215,6 @@ def create_mask(img, original_img):
   # Convert the final PIL Image back to a numpy array
   input2 = np.array(input2)
 
-  #input2 = cv2.cvtColor(input2, cv2.COLOR_BGR2RGB)
   cv2.cvtColor(input2, cv2.COLOR_BGR2RGB, input2)
   
   return input2, mask
@@ -414,9 +435,9 @@ def main():
           if not args.no_seg==True:
             print(f"mask size: {args.mask_dilation}, feathering: {args.mask_feathering}")
           
-          if not args.no_sr==True:
-            print("Loading", args.sr_model)
-            run_params = load_sr()
+          #if not args.no_sr==True:
+          print("Loading", args.sr_model)
+          run_params = load_sr()
 
           print("Starting...")
           frame_h, frame_w = full_frames[0].shape[:-1]
@@ -431,25 +452,27 @@ def main():
         pred = pred.cpu().numpy().transpose(0, 2, 3, 1) * 255.
 
         for p, f, c in zip(pred, frames, coords):
+            cv2.imwrite('temp/f.jpg', f)
+            
             y1, y2, x1, x2 = c
 
             if args.debug_mask: #makes the background black & white so you can see the mask better
               f = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)
               f = cv2.cvtColor(f, cv2.COLOR_GRAY2BGR)
-            
+            of=f
             p = cv2.resize(p.astype(np.uint8), (x2 - x1, y2 - y1))
             cf = f[y1:y2, x1:x2]
 
             if not args.no_sr:
                 p = upscale(p, run_params)
 
-            if not args.no_seg:
-                last_mask = None
-                for i in range(len(frames)):
-                  p, last_mask = create_mask(p, cf)
-
-
             f[y1:y2, x1:x2] = p
+            cv2.imwrite('temp/p.jpg', f)
+
+            if not args.no_seg:
+              last_mask = None
+              for i in range(len(frames)):
+                f, last_mask = create_mask(f, of,run_params)
 
             if args.preview_settings:
               cv2.imwrite('temp/preview.jpg', f)
