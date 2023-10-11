@@ -470,6 +470,9 @@ def main():
             cv2.imwrite('temp/p.jpg', f)
 
             if not args.no_seg:
+              if args.debug_mask: #makes the background black & white so you can see the mask better
+                f = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)
+                f = cv2.cvtColor(f, cv2.COLOR_GRAY2BGR)
               last_mask = None
               for i in range(len(frames)):
                 f, last_mask = create_mask(f, of,run_params)
