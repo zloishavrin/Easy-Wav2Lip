@@ -106,10 +106,10 @@ parser.add_argument('--mask_dilation', default=150, type=float,
 parser.add_argument('--mask_feathering', default=151, type=float,
             help='amount of feathering of mask around mouth', required=False)
 
-with open('face_detection/predictor.pkl', 'rb') as f:
+with open('face_alignment/predictor.pkl', 'rb') as f:
     predictor = pickle.load(f)
 
-with open('face_detection/mouth_detector.pkl', 'rb') as f:
+with open('face_alignment/mouth_detector.pkl', 'rb') as f:
     mouth_detector = pickle.load(f)
 
 #creating variables to prevent failing when a face isn't detected
