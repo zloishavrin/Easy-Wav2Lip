@@ -106,10 +106,10 @@ def load_predictor():
   mouth_detector = dlib.get_frontal_face_detector()
 
   # Serialize the variables
-  with open('face_detection/predictor.pkl', 'wb') as f:
+  with open('face_alignment/predictor.pkl', 'wb') as f:
       pickle.dump(predictor, f)
 
-  with open('face_detection/mouth_detector.pkl', 'wb') as f:
+  with open('face_alignment/mouth_detector.pkl', 'wb') as f:
       pickle.dump(mouth_detector, f)
 
 def load_file_from_url(url, model_dir=None, progress=True, file_name=None):
