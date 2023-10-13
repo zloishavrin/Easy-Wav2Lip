@@ -5,7 +5,7 @@ warnings.filterwarnings("ignore")
 
 def load_sr():
   run_params = GFPGANer(
-    model_path='https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.4.pth',
+    model_path='checkpoints/GFPGANv1.4.pth',
     upscale=1,
     arch='clean',
     channel_multiplier=2,
