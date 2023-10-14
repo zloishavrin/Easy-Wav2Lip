@@ -118,9 +118,13 @@ def create_mask(img, original_img,run_params):
   global kernel, last_mask, x, y, w, h  # Add last_mask to global variables
   
    # Convert color space from BGR to RGB if necessary 
-  cv2.cvtColor(img, cv2.COLOR_BGR2RGB, img) 
-  cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB, original_img) 
-  
+  img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+  original_img  = cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB)
+
+  if args.debug_mask:
+    original_img = cv2.cvtColor(original_img, cv2.COLOR_RGB2GRAY)
+    original_img = cv2.cvtColor(original_img, cv2.COLOR_GRAY2RGB)
+
    # Detect face 
   faces = mouth_detector(img) 
   if len(faces) == 0: 
@@ -142,11 +146,11 @@ def create_mask(img, original_img,run_params):
 
       # Set kernel size as a fraction of bounding box size
       kernel_size = int(max(w, h) * args.mask_dilation)
-      #if kernel_size % 2 == 0:  # Ensure kernel size is odd
-        #kernel_size += 1
+      upscale_kernel_size = int(max(w, h) * (args.mask_dilation * 1.5))
 
-      # Create kernel
+      # Create kernels
       kernel = np.ones((kernel_size, kernel_size), np.uint8)
+      upscale_kernel = np.ones((upscale_kernel_size, upscale_kernel_size), np.uint8)
 
       # Create binary mask for mouth 
       mask = np.zeros(img.shape[:2], dtype=np.uint8) 
@@ -154,11 +158,12 @@ def create_mask(img, original_img,run_params):
 
       last_mask = mask  # Update last_mask with the new mask
   
-  # Dilate the mask
+  # Dilate the mask for upscaling
+  upscale_dilated_mask = cv2.dilate(mask, upscale_kernel)
   dilated_mask = cv2.dilate(mask, kernel)
 
   # Find contours in the dilated mask
-  contours, _ = cv2.findContours(dilated_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+  contours, _ = cv2.findContours(upscale_dilated_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
   # Find bounding box coordinates for each contour
   for contour in contours:
@@ -175,6 +180,10 @@ def create_mask(img, original_img,run_params):
 
     cv2.imwrite('temp/ucp.jpg', upscaled_img)
 
+    if args.debug_mask:
+      img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+      img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+
     # Paste the upscaled image back onto the original image
     img[y_dilated:y_dilated+h_dilated, x_dilated:x_dilated+w_dilated] = upscaled_img
 
@@ -189,10 +198,7 @@ def create_mask(img, original_img,run_params):
   _, masked_diff = cv2.threshold(dist_transform, 50, 255, cv2.THRESH_BINARY)
   masked_diff = masked_diff.astype(np.uint8)
   
-  #make sure blur is an odd number
   blur = args.mask_feathering
-  if blur % 2 == 0:
-    blur += 1
   # Set blur size as a fraction of bounding box size
   blur = int(max(w, h) * blur)  # 10% of bounding box size
   if blur % 2 == 0:  # Ensure blur size is odd
@@ -456,9 +462,9 @@ def main():
             
             y1, y2, x1, x2 = c
 
-            if args.debug_mask: #makes the background black & white so you can see the mask better
-              f = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)
-              f = cv2.cvtColor(f, cv2.COLOR_GRAY2BGR)
+            #if args.debug_mask: #makes the background black & white so you can see the mask better
+              #f = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)
+              #f = cv2.cvtColor(f, cv2.COLOR_GRAY2BGR)
             of=f
             p = cv2.resize(p.astype(np.uint8), (x2 - x1, y2 - y1))
             cf = f[y1:y2, x1:x2]
@@ -470,9 +476,9 @@ def main():
             cv2.imwrite('temp/p.jpg', f)
 
             if not args.no_seg:
-              if args.debug_mask: #makes the background black & white so you can see the mask better
-                f = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)
-                f = cv2.cvtColor(f, cv2.COLOR_GRAY2BGR)
+              #if args.debug_mask: #makes the background black & white so you can see the mask better
+                #f = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)
+                #f = cv2.cvtColor(f, cv2.COLOR_GRAY2BGR)
               last_mask = None
               for i in range(len(frames)):
                 f, last_mask = create_mask(f, of,run_params)
