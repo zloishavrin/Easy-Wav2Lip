@@ -504,37 +504,25 @@ def main():
           args.outfile ,
       ])
 
-
 model = detector = detector_model = None
-
 def do_load(checkpoint_path):
     global model, detector, detector_model
-
     model = load_model(checkpoint_path)
-
-    # SFDDetector.load_model(device)
     detector = RetinaFace(gpu_id=0, model_path="checkpoints/mobilenet.pth", network="mobilenet")
-    # detector = RetinaFace(gpu_id=0, model_path="checkpoints/resnet50.pth", network="resnet50")
-
     detector_model = detector.model
 
-    #print("Models loaded")
-
-
-face_batch_size = 8
-
 def face_rect(images):
-    num_batches = math.ceil(len(images) / face_batch_size)
-    prev_ret = None
-    for i in range(num_batches):
-        batch = images[i * face_batch_size: (i + 1) * face_batch_size]
-        all_faces = detector(batch)  # return faces list of all images
-        for faces in all_faces:
-            if faces:
-                box, landmarks, score = faces[0]
-                prev_ret = tuple(map(int, box))
-            yield prev_ret
-
+  face_batch_size = 8
+  num_batches = math.ceil(len(images) / face_batch_size)
+  prev_ret = None
+  for i in range(num_batches):
+      batch = images[i * face_batch_size: (i + 1) * face_batch_size]
+      all_faces = detector(batch)  # return faces list of all images
+      for faces in all_faces:
+          if faces:
+              box, landmarks, score = faces[0]
+              prev_ret = tuple(map(int, box))
+          yield prev_ret
 
 if __name__ == '__main__':
     args = parser.parse_args()
