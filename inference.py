@@ -146,7 +146,7 @@ def create_mask(img, original_img,run_params):
 
       # Set kernel size as a fraction of bounding box size
       kernel_size = int(max(w, h) * args.mask_dilation)
-      upscale_kernel_size = int(max(w, h) * (args.mask_dilation * 1.5))
+      upscale_kernel_size = int(max(w, h) * max(args.mask_dilation, 2.5))
 
       # Create kernels
       kernel = np.ones((kernel_size, kernel_size), np.uint8)
@@ -173,12 +173,12 @@ def create_mask(img, original_img,run_params):
     cropped_img = img[y_dilated:y_dilated+h_dilated, x_dilated:x_dilated+w_dilated]
 
     # Save the cropped image here
-    cv2.imwrite('temp/cp.jpg', cropped_img)
+    #cv2.imwrite('temp/cp.jpg', cropped_img)
 
     # Upscale the cropped image
     upscaled_img = upscale(cropped_img, run_params)
 
-    cv2.imwrite('temp/ucp.jpg', upscaled_img)
+    #cv2.imwrite('temp/ucp.jpg', upscaled_img)
 
     if args.debug_mask:
       img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
@@ -458,7 +458,7 @@ def main():
         pred = pred.cpu().numpy().transpose(0, 2, 3, 1) * 255.
 
         for p, f, c in zip(pred, frames, coords):
-            cv2.imwrite('temp/f.jpg', f)
+            #cv2.imwrite('temp/f.jpg', f)
             
             y1, y2, x1, x2 = c
 
@@ -473,7 +473,7 @@ def main():
                 p = upscale(p, run_params)
 
             f[y1:y2, x1:x2] = p
-            cv2.imwrite('temp/p.jpg', f)
+            #cv2.imwrite('temp/p.jpg', f)
 
             if not args.no_seg:
               #if args.debug_mask: #makes the background black & white so you can see the mask better
