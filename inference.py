@@ -649,9 +649,13 @@ def main():
               p = upscale(p, run_params)
 
             if args.quality in ['Enhanced', 'Improved']:
-              last_mask = None
-              for i in range(len(frames)):
-                p, last_mask = create_mask(p, cf)
+	      if args.mouth_tracking:
+		for i in range(len(frames)):
+		  p, last_mask = create_tracked_mask(p, cf)
+	      else:
+		for i in range(len(frames)):
+		  p, last_mask = create_mask(p, cf)
+		      
 
             f[y1:y2, x1:x2] = p
             #cv2.imwrite('temp/p.jpg', f)
