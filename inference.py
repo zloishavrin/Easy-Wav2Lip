@@ -79,7 +79,7 @@ parser.add_argument('--rotate', default=False, action='store_true',
                     help='Sometimes videos taken from a phone can be flipped 90deg. If true, will flip video right by 90deg.'
                     'Use if you get a flipped result, despite feeding a normal looking video')
 
-parser.add_argument('--nosmooth', default=False, action='store_true',
+parser.add_argument('--nosmooth', type=bool, default=False,
                     help='Prevent smoothing face detections over a short temporal window')
 
 parser.add_argument('--no_seg', default=False, action='store_true',
@@ -94,11 +94,14 @@ parser.add_argument('--sr_model', type=str, default='gfpgan',
 parser.add_argument('--fullres', default=3, type=int,
             help='used only to determine if full res is used so that no resizing needs to be done if so')
 
-parser.add_argument('--debug_mask', default=False, action='store_true', 
+parser.add_argument('--debug_mask', type=bool, default=False, 
                     help='Makes background grayscale to see the mask better')
 
-parser.add_argument('--preview_settings', default=False, action='store_true', 
+parser.add_argument('--preview_settings', type=bool, default=False, 
 help='Processes only one frame')
+
+parser.add_argument('--mouth_tracking', type=bool, default=False, 
+help='Tracks the mouth in every frame for the mask')
 
 parser.add_argument('--mask_dilation', default=150, type=float,
             help='size of mask around mouth', required=False)
