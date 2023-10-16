@@ -1,41 +1,43 @@
-print('loading imports:')
-print('\rtorch   ', end='')
+print('\rloading torch   ', end='')
 import torch
-print('\rnumpy   ', end='')
+print('\rloading numpy   ', end='')
 import numpy as np
-print('\rImage   ', end='')
+print('\rloading Image   ', end='')
 from PIL import Image
-print('\rargparse', end='')
+print('\rloading argparse', end='')
 import argparse
-print('\rmath    ', end='')
+print('\rloading math    ', end='')
 import math
-print('\ros      ', end='')
+print('\rloading os      ', end='')
 import os
-print('\rsubprocess', end='')
+print('\rloading subprocess', end='')
 import subprocess
-print('\rpickle  ', end='')
+print('\rloading pickle  ', end='')
 import pickle
-print('\rcv2     ', end='')
+print('\rloading cv2     ', end='')
 import cv2
-print('\raudio   ', end='')
+print('\rloading audio   ', end='')
 import audio
-print('\rWav2Lip ', end='')
+print('\rloading Wav2Lip ', end='')
 from models import Wav2Lip
-print('\rRetinaFace', end='')
+print('\rRloading etinaFace', end='')
 from batch_face import RetinaFace
-print('\rtime    ', end='')
+print('\rtloading ime    ', end='')
 from time import time
-print('\rre      ', end='')
+print('\rloading re      ', end='')
 import re
-print('\rpartial ', end='')
+print('\rloading partial ', end='')
 from functools import partial
-print('\rtqdm    ', end='')
+print('\rloading tqdm    ', end='')
 from tqdm import tqdm
-print('\rwarnings', end='')
+print('\rloading warnings', end='')
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module='torchvision.transforms.functional_tensor')
-print('\rupscale, load_sr', end='')
-from enhance import upscale, load_sr
+print('\rloading upscale', end='')
+from enhance import upscale
+print('\rloading load_sr', end='')
+from enhance import load_sr
+
 print('\rimports loaded!')
 
 device='cuda'
@@ -106,7 +108,7 @@ help='Tracks the mouth in every frame for the mask')
 parser.add_argument('--mask_dilation', default=150, type=float,
             help='size of mask around mouth', required=False)
 
-parser.add_argument('--mask_feathering', default=151, type=float,
+parser.add_argument('--mask_feathering', default=151, type=int,
             help='amount of feathering of mask around mouth', required=False)
 
 parser.add_argument('--quality', type=str, help='Choose between Fast, Improved, Enhanced and Experimental', 
@@ -204,12 +206,13 @@ def Experimental(img, original_img,run_params):
   _, masked_diff = cv2.threshold(dist_transform, 50, 255, cv2.THRESH_BINARY)
   masked_diff = masked_diff.astype(np.uint8)
   
-  blur = args.mask_feathering
-  # Set blur size as a fraction of bounding box size
-  blur = int(max(w, h) * blur)  # 10% of bounding box size
-  if blur % 2 == 0:  # Ensure blur size is odd
-    blur += 1
-  masked_diff = cv2.GaussianBlur(masked_diff, (blur, blur), 0)
+  if not args.mask_feathering == 0:
+    blur = args.mask_feathering
+    # Set blur size as a fraction of bounding box size
+    blur = int(max(w, h) * blur)  # 10% of bounding box size
+    if blur % 2 == 0:  # Ensure blur size is odd
+      blur += 1
+    masked_diff = cv2.GaussianBlur(masked_diff, (blur, blur), 0)
 
   # Convert numpy arrays to PIL Images
   input1 = Image.fromarray(img)
@@ -369,15 +372,13 @@ def create_mask(img, original_img):
         _, masked_diff = cv2.threshold(dist_transform, 50, 255, cv2.THRESH_BINARY)
         masked_diff = masked_diff.astype(np.uint8)
 
-        #make sure blur is an odd number
-        blur = args.mask_feathering
-        if blur % 2 == 0:
+        if not args.mask_feathering == 0:
+          blur = args.mask_feathering
+          # Set blur size as a fraction of bounding box size
+          blur = int(max(w, h) * blur)  # 10% of bounding box size
+          if blur % 2 == 0:  # Ensure blur size is odd
             blur += 1
-        # Set blur size as a fraction of bounding box size
-        blur = int(max(w, h) * blur)  # 10% of bounding box size
-        if blur % 2 == 0:  # Ensure blur size is odd
-            blur += 1
-        masked_diff = cv2.GaussianBlur(masked_diff, (blur, blur), 0)
+          masked_diff = cv2.GaussianBlur(masked_diff, (blur, blur), 0)
 
         # Convert mask to single channel where pixel values are from the alpha channel of the current mask
         mask = Image.fromarray(masked_diff)
@@ -580,7 +581,7 @@ def main():
           ])
         args.audio = 'temp/temp.wav'
         
-    print('analysing frames')
+    print('analysing frames...')
     wav = audio.load_wav(args.audio, 16000)
     mel = audio.melspectrogram(wav)
  
@@ -603,7 +604,7 @@ def main():
     if str(args.preview_settings) == 'True':
       full_frames = [full_frames[0]]
       mel_chunks = [mel_chunks[0]]
-    print ("Number of frames to process: "+str(len(full_frames)))
+    print (str(len(full_frames))+' frames to process')
     batch_size = args.wav2lip_batch_size
     if str(args.preview_settings) == 'True':
       gen = datagen(full_frames, mel_chunks)
@@ -643,7 +644,7 @@ def main():
             
             y1, y2, x1, x2 = c
 
-            if str(args.debug_mask) == 'True' and args.quality in ['Enhanced', 'Improved']: #makes the background black & white so you can see the mask better
+            if str(args.debug_mask) == 'True' and args.quality != "Experimental": #makes the background black & white so you can see the mask better
               f = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)
               f = cv2.cvtColor(f, cv2.COLOR_GRAY2BGR)
             of=f
