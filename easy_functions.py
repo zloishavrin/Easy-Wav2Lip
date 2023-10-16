@@ -38,11 +38,12 @@ def show_video(file_path):
   """Function to display video in Colab"""
   mp4 = open(file_path,'rb').read()
   data_url = "data:video/mp4;base64," + b64encode(mp4).decode()
+  width, _, _, _ = get_video_details(file_path)
   display(HTML("""
-  <video controls width=600>
+  <video controls width=%d>
       <source src="%s" type="video/mp4">
   </video>
-  """ % data_url))
+  """ % (min(width, 1280), data_url)))
 
 def format_time(seconds):
     hours = int(seconds // 3600)
