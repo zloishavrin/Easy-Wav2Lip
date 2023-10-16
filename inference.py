@@ -79,9 +79,9 @@ parser.add_argument('--rotate', default=False, action='store_true',
                     help='Sometimes videos taken from a phone can be flipped 90deg. If true, will flip video right by 90deg.'
                     'Use if you get a flipped result, despite feeding a normal looking video')
 
-parser.add_argument('--nosmooth', type=bool, default=False,
+parser.add_argument('--nosmooth', type=str, default=False,
                     help='Prevent smoothing face detections over a short temporal window')
-
+              
 parser.add_argument('--no_seg', default=False, action='store_true',
 					help='Prevent using face segmentation')
 
@@ -94,13 +94,13 @@ parser.add_argument('--sr_model', type=str, default='gfpgan',
 parser.add_argument('--fullres', default=3, type=int,
             help='used only to determine if full res is used so that no resizing needs to be done if so')
 
-parser.add_argument('--debug_mask', type=bool, default=False, 
+parser.add_argument('--debug_mask', type=str, default=False, 
                     help='Makes background grayscale to see the mask better')
 
-parser.add_argument('--preview_settings', type=bool, default=False, 
+parser.add_argument('--preview_settings', type=str, default=False, 
 help='Processes only one frame')
 
-parser.add_argument('--mouth_tracking', type=bool, default=False, 
+parser.add_argument('--mouth_tracking', type=str, default=False, 
 help='Tracks the mouth in every frame for the mask')
 
 parser.add_argument('--mask_dilation', default=150, type=float,
@@ -127,7 +127,7 @@ def Experimental(img, original_img,run_params):
   img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
   original_img  = cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB)
 
-  if args.debug_mask:
+  if str(args.debug_mask) == 'True':
     original_img = cv2.cvtColor(original_img, cv2.COLOR_RGB2GRAY)
     original_img = cv2.cvtColor(original_img, cv2.COLOR_GRAY2RGB)
 
@@ -186,7 +186,7 @@ def Experimental(img, original_img,run_params):
 
     #cv2.imwrite('temp/ucp.jpg', upscaled_img)
 
-    if args.debug_mask:
+    if str(args.debug_mask) == 'True':
       img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
       img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
 
@@ -323,72 +323,77 @@ def create_mask(img, original_img):
   cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB, original_img)
 
   if last_mask is not None: 
-    last_mask = cv2.resize(last_mask, (img.shape[1], img.shape[0]))
-    mask = last_mask  # use the last successful mask 
+      last_mask = np.array(last_mask)  # Convert PIL Image to numpy array
+      last_mask = cv2.resize(last_mask, (img.shape[1], img.shape[0]))
+      mask = last_mask  # use the last successful mask 
+      mask = Image.fromarray(mask)
+
   else:
     # Detect face 
     faces = mouth_detector(img) 
     if len(faces) == 0: 
-      if last_mask is not None: 
-        last_mask = cv2.resize(last_mask, (img.shape[1], img.shape[0]))
-        mask = last_mask  # use the last successful mask 
-      else: 
         cv2.cvtColor(img, cv2.COLOR_BGR2RGB, img) 
         return img, None 
-      else: 
-	face = faces[0] 
-	shape = predictor(img, face) 
-	
-	# Get points for mouth 
-	mouth_points = np.array([[shape.part(i).x, shape.part(i).y] for i in range(48, 68)]) 
-	
-	# Calculate bounding box dimensions
-	x, y, w, h = cv2.boundingRect(mouth_points)
-	
-	# Set kernel size as a fraction of bounding box size
-	kernel_size = int(max(w, h) * args.mask_dilation)
-	#if kernel_size % 2 == 0:  # Ensure kernel size is odd
-	#kernel_size += 1
-	
-	# Create kernel
-	kernel = np.ones((kernel_size, kernel_size), np.uint8)
-	
-	# Create binary mask for mouth 
-	mask = np.zeros(img.shape[:2], dtype=np.uint8) 
-	cv2.fillConvexPoly(mask, mouth_points, 255)
-	
-	# Dilate the mask
-	dilated_mask = cv2.dilate(mask, kernel)
-	
-	# Calculate distance transform of dilated mask
-	dist_transform = cv2.distanceTransform(dilated_mask, cv2.DIST_L2, 5)
-	
-	# Normalize distance transform
-	cv2.normalize(dist_transform, dist_transform, 0, 255, cv2.NORM_MINMAX)
-	
-	# Convert normalized distance transform to binary mask and convert it to uint8
-	_, masked_diff = cv2.threshold(dist_transform, 50, 255, cv2.THRESH_BINARY)
-	masked_diff = masked_diff.astype(np.uint8)
-	
-	#make sure blur is an odd number
-	blur = args.mask_feathering
-	if blur % 2 == 0:
-	blur += 1
-	# Set blur size as a fraction of bounding box size
-	blur = int(max(w, h) * blur)  # 10% of bounding box size
-	if blur % 2 == 0:  # Ensure blur size is odd
-	blur += 1
-	masked_diff = cv2.GaussianBlur(masked_diff, (blur, blur), 0)
-	
-	# Convert mask to single channel where pixel values are from the alpha channel of the current mask
-	mask = Image.fromarray(masked_diff)
+    else: 
+        face = faces[0] 
+        shape = predictor(img, face) 
+    
+        # Get points for mouth 
+        mouth_points = np.array([[shape.part(i).x, shape.part(i).y] for i in range(48, 68)]) 
 
-	last_mask = mask  # Update last_mask with the new mask
+        # Calculate bounding box dimensions
+        x, y, w, h = cv2.boundingRect(mouth_points)
 
+        # Set kernel size as a fraction of bounding box size
+        kernel_size = int(max(w, h) * args.mask_dilation)
+        #if kernel_size % 2 == 0:  # Ensure kernel size is odd
+          #kernel_size += 1
+
+        # Create kernel
+        kernel = np.ones((kernel_size, kernel_size), np.uint8)
+
+        # Create binary mask for mouth 
+        mask = np.zeros(img.shape[:2], dtype=np.uint8) 
+        cv2.fillConvexPoly(mask, mouth_points, 255)
+
+        # Dilate the mask
+        dilated_mask = cv2.dilate(mask, kernel)
+
+        # Calculate distance transform of dilated mask
+        dist_transform = cv2.distanceTransform(dilated_mask, cv2.DIST_L2, 5)
+
+        # Normalize distance transform
+        cv2.normalize(dist_transform, dist_transform, 0, 255, cv2.NORM_MINMAX)
+
+        # Convert normalized distance transform to binary mask and convert it to uint8
+        _, masked_diff = cv2.threshold(dist_transform, 50, 255, cv2.THRESH_BINARY)
+        masked_diff = masked_diff.astype(np.uint8)
+
+        #make sure blur is an odd number
+        blur = args.mask_feathering
+        if blur % 2 == 0:
+            blur += 1
+        # Set blur size as a fraction of bounding box size
+        blur = int(max(w, h) * blur)  # 10% of bounding box size
+        if blur % 2 == 0:  # Ensure blur size is odd
+            blur += 1
+        masked_diff = cv2.GaussianBlur(masked_diff, (blur, blur), 0)
+
+        # Convert mask to single channel where pixel values are from the alpha channel of the current mask
+        mask = Image.fromarray(masked_diff)
+
+        last_mask = mask  # Update last_mask with the final mask after dilation and feathering
 
   # Convert numpy arrays to PIL Images
   input1 = Image.fromarray(img)
   input2 = Image.fromarray(original_img)
+
+  # Resize mask to match image size
+  #mask = Image.fromarray(mask)
+  mask = mask.resize(input1.size)
+
+  # Ensure images are the same size
+  assert input1.size == input2.size == mask.size
 
   # Paste input1 onto input2 using the mask
   input2.paste(input1, (0,0), mask)
@@ -435,7 +440,7 @@ def face_detect(images, results_file='face_alignment/last_detected_face.pkl'):
         results.append([x1, y1, x2, y2])
 
     boxes = np.array(results)
-    if not args.nosmooth: boxes = get_smoothened_boxes(boxes, T=5)
+    if str(args.nosmooth) == 'False': boxes = get_smoothened_boxes(boxes, T=5)
     results = [[image[y1: y2, x1:x2], (y1, y2, x1, x2)] for image, (x1, y1, x2, y2) in zip(images, boxes)]
 
     # Save results to file
@@ -595,12 +600,12 @@ def main():
         i += 1;
     
     full_frames = full_frames[:len(mel_chunks)]
-    if args.preview_settings:
+    if str(args.preview_settings) == 'True':
       full_frames = [full_frames[0]]
       mel_chunks = [mel_chunks[0]]
     print ("Number of frames to process: "+str(len(full_frames)))
     batch_size = args.wav2lip_batch_size
-    if args.preview_settings:
+    if str(args.preview_settings) == 'True':
       gen = datagen(full_frames, mel_chunks)
     else:
       gen = datagen(full_frames.copy(), mel_chunks)
@@ -638,7 +643,7 @@ def main():
             
             y1, y2, x1, x2 = c
 
-            if args.debug_mask and args.quality in ['Enhanced', 'Improved']: #makes the background black & white so you can see the mask better
+            if str(args.debug_mask) == 'True' and args.quality in ['Enhanced', 'Improved']: #makes the background black & white so you can see the mask better
               f = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)
               f = cv2.cvtColor(f, cv2.COLOR_GRAY2BGR)
             of=f
@@ -649,12 +654,12 @@ def main():
               p = upscale(p, run_params)
 
             if args.quality in ['Enhanced', 'Improved']:
-	      if args.mouth_tracking:
-		for i in range(len(frames)):
-		  p, last_mask = create_tracked_mask(p, cf)
-	      else:
-		for i in range(len(frames)):
-		  p, last_mask = create_mask(p, cf)
+              if str(args.mouth_tracking) == 'True':
+                for i in range(len(frames)):
+                  p, last_mask = create_tracked_mask(p, cf)
+              else:
+                for i in range(len(frames)):
+                  p, last_mask = create_mask(p, cf)
 		      
 
             f[y1:y2, x1:x2] = p
@@ -665,7 +670,7 @@ def main():
               for i in range(len(frames)):
                 f, last_mask = Experimental(f, of,run_params)
 
-            if args.preview_settings:
+            if str(args.preview_settings) == 'True':
               cv2.imwrite('temp/preview.jpg', f)
 
             else:
@@ -674,7 +679,7 @@ def main():
     out.release()
     
     print("wav2lip completion time:", time() - s)
-    if not args.preview_settings:
+    if str(args.preview_settings) == 'False':
       print("converting to final video")
 
       subprocess.check_call([
