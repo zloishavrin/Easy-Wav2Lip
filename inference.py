@@ -332,62 +332,60 @@ def create_mask(img, original_img):
       else: 
         cv2.cvtColor(img, cv2.COLOR_BGR2RGB, img) 
         return img, None 
-    else: 
-        face = faces[0] 
-        shape = predictor(img, face) 
-    
-        # Get points for mouth 
-        mouth_points = np.array([[shape.part(i).x, shape.part(i).y] for i in range(48, 68)]) 
+      else: 
+	face = faces[0] 
+	shape = predictor(img, face) 
+	
+	# Get points for mouth 
+	mouth_points = np.array([[shape.part(i).x, shape.part(i).y] for i in range(48, 68)]) 
+	
+	# Calculate bounding box dimensions
+	x, y, w, h = cv2.boundingRect(mouth_points)
+	
+	# Set kernel size as a fraction of bounding box size
+	kernel_size = int(max(w, h) * args.mask_dilation)
+	#if kernel_size % 2 == 0:  # Ensure kernel size is odd
+	#kernel_size += 1
+	
+	# Create kernel
+	kernel = np.ones((kernel_size, kernel_size), np.uint8)
+	
+	# Create binary mask for mouth 
+	mask = np.zeros(img.shape[:2], dtype=np.uint8) 
+	cv2.fillConvexPoly(mask, mouth_points, 255)
+	
+	# Dilate the mask
+	dilated_mask = cv2.dilate(mask, kernel)
+	
+	# Calculate distance transform of dilated mask
+	dist_transform = cv2.distanceTransform(dilated_mask, cv2.DIST_L2, 5)
+	
+	# Normalize distance transform
+	cv2.normalize(dist_transform, dist_transform, 0, 255, cv2.NORM_MINMAX)
+	
+	# Convert normalized distance transform to binary mask and convert it to uint8
+	_, masked_diff = cv2.threshold(dist_transform, 50, 255, cv2.THRESH_BINARY)
+	masked_diff = masked_diff.astype(np.uint8)
+	
+	#make sure blur is an odd number
+	blur = args.mask_feathering
+	if blur % 2 == 0:
+	blur += 1
+	# Set blur size as a fraction of bounding box size
+	blur = int(max(w, h) * blur)  # 10% of bounding box size
+	if blur % 2 == 0:  # Ensure blur size is odd
+	blur += 1
+	masked_diff = cv2.GaussianBlur(masked_diff, (blur, blur), 0)
+	
+	# Convert mask to single channel where pixel values are from the alpha channel of the current mask
+	mask = Image.fromarray(masked_diff)
 
-        # Calculate bounding box dimensions
-        x, y, w, h = cv2.boundingRect(mouth_points)
+	last_mask = mask  # Update last_mask with the new mask
 
-        # Set kernel size as a fraction of bounding box size
-        kernel_size = int(max(w, h) * args.mask_dilation)
-        #if kernel_size % 2 == 0:  # Ensure kernel size is odd
-          #kernel_size += 1
-
-        # Create kernel
-        kernel = np.ones((kernel_size, kernel_size), np.uint8)
-
-        # Create binary mask for mouth 
-        mask = np.zeros(img.shape[:2], dtype=np.uint8) 
-        cv2.fillConvexPoly(mask, mouth_points, 255)
-
-        last_mask = mask  # Update last_mask with the new mask
-  
-  # Dilate the mask
-  dilated_mask = cv2.dilate(mask, kernel)
-
-  # Calculate distance transform of dilated mask
-  dist_transform = cv2.distanceTransform(dilated_mask, cv2.DIST_L2, 5)
-
-  # Normalize distance transform
-  cv2.normalize(dist_transform, dist_transform, 0, 255, cv2.NORM_MINMAX)
-
-  # Convert normalized distance transform to binary mask and convert it to uint8
-  _, masked_diff = cv2.threshold(dist_transform, 50, 255, cv2.THRESH_BINARY)
-  masked_diff = masked_diff.astype(np.uint8)
-  
-  #make sure blur is an odd number
-  blur = args.mask_feathering
-  if blur % 2 == 0:
-    blur += 1
-  # Set blur size as a fraction of bounding box size
-  blur = int(max(w, h) * blur)  # 10% of bounding box size
-  if blur % 2 == 0:  # Ensure blur size is odd
-    blur += 1
-  masked_diff = cv2.GaussianBlur(masked_diff, (blur, blur), 0)
 
   # Convert numpy arrays to PIL Images
   input1 = Image.fromarray(img)
   input2 = Image.fromarray(original_img)
-
-  # Convert mask to single channel where pixel values are from the alpha channel of the current mask
-  mask = Image.fromarray(masked_diff)
-
-  # Ensure images are the same size
-  assert input1.size == input2.size == mask.size
 
   # Paste input1 onto input2 using the mask
   input2.paste(input1, (0,0), mask)
