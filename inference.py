@@ -106,6 +106,9 @@ parser.add_argument('--mask_dilation', default=150, type=float,
 parser.add_argument('--mask_feathering', default=151, type=float,
             help='amount of feathering of mask around mouth', required=False)
 
+parser.add_argument('--quality', type=str, help='Choose between Fast, Improved, Enhanced and Experimental', 
+                                default='Fast')            
+
 with open('face_alignment/predictor.pkl', 'rb') as f:
     predictor = pickle.load(f)
 
@@ -114,7 +117,7 @@ with open('face_alignment/mouth_detector.pkl', 'rb') as f:
 
 #creating variables to prevent failing when a face isn't detected
 kernel = last_mask = x = y = w = h = None
-def create_mask(img, original_img,run_params): 
+def Experimental(img, original_img,run_params): 
   global kernel, last_mask, x, y, w, h  # Add last_mask to global variables
   
    # Convert color space from BGR to RGB if necessary 
@@ -221,6 +224,178 @@ def create_mask(img, original_img,run_params):
   # Convert the final PIL Image back to a numpy array
   input2 = np.array(input2)
 
+  cv2.cvtColor(input2, cv2.COLOR_BGR2RGB, input2)
+  
+  return input2, mask
+
+def create_tracked_mask(img, original_img): 
+  global kernel, last_mask, x, y, w, h  # Add last_mask to global variables
+  
+   # Convert color space from BGR to RGB if necessary 
+  cv2.cvtColor(img, cv2.COLOR_BGR2RGB, img) 
+  cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB, original_img) 
+  
+   # Detect face 
+  faces = mouth_detector(img) 
+  if len(faces) == 0: 
+     if last_mask is not None: 
+       last_mask = cv2.resize(last_mask, (img.shape[1], img.shape[0]))
+       mask = last_mask  # use the last successful mask 
+     else: 
+       cv2.cvtColor(img, cv2.COLOR_BGR2RGB, img) 
+       return img, None 
+  else: 
+      face = faces[0] 
+      shape = predictor(img, face) 
+  
+      # Get points for mouth 
+      mouth_points = np.array([[shape.part(i).x, shape.part(i).y] for i in range(48, 68)]) 
+
+      # Calculate bounding box dimensions
+      x, y, w, h = cv2.boundingRect(mouth_points)
+
+      # Set kernel size as a fraction of bounding box size
+      kernel_size = int(max(w, h) * args.mask_dilation)
+      #if kernel_size % 2 == 0:  # Ensure kernel size is odd
+        #kernel_size += 1
+
+      # Create kernel
+      kernel = np.ones((kernel_size, kernel_size), np.uint8)
+
+      # Create binary mask for mouth 
+      mask = np.zeros(img.shape[:2], dtype=np.uint8) 
+      cv2.fillConvexPoly(mask, mouth_points, 255)
+
+      last_mask = mask  # Update last_mask with the new mask
+  
+  # Dilate the mask
+  dilated_mask = cv2.dilate(mask, kernel)
+
+  # Calculate distance transform of dilated mask
+  dist_transform = cv2.distanceTransform(dilated_mask, cv2.DIST_L2, 5)
+
+  # Normalize distance transform
+  cv2.normalize(dist_transform, dist_transform, 0, 255, cv2.NORM_MINMAX)
+
+  # Convert normalized distance transform to binary mask and convert it to uint8
+  _, masked_diff = cv2.threshold(dist_transform, 50, 255, cv2.THRESH_BINARY)
+  masked_diff = masked_diff.astype(np.uint8)
+  
+  #make sure blur is an odd number
+  blur = args.mask_feathering
+  if blur % 2 == 0:
+    blur += 1
+  # Set blur size as a fraction of bounding box size
+  blur = int(max(w, h) * blur)  # 10% of bounding box size
+  if blur % 2 == 0:  # Ensure blur size is odd
+    blur += 1
+  masked_diff = cv2.GaussianBlur(masked_diff, (blur, blur), 0)
+
+  # Convert numpy arrays to PIL Images
+  input1 = Image.fromarray(img)
+  input2 = Image.fromarray(original_img)
+
+  # Convert mask to single channel where pixel values are from the alpha channel of the current mask
+  mask = Image.fromarray(masked_diff)
+
+  # Ensure images are the same size
+  assert input1.size == input2.size == mask.size
+
+  # Paste input1 onto input2 using the mask
+  input2.paste(input1, (0,0), mask)
+
+  # Convert the final PIL Image back to a numpy array
+  input2 = np.array(input2)
+
+  #input2 = cv2.cvtColor(input2, cv2.COLOR_BGR2RGB)
+  cv2.cvtColor(input2, cv2.COLOR_BGR2RGB, input2)
+  
+  return input2, mask
+
+def create_mask(img, original_img): 
+  global kernel, last_mask, x, y, w, h  # Add last_mask to global variables
+  
+   # Convert color space from BGR to RGB if necessary 
+  cv2.cvtColor(img, cv2.COLOR_BGR2RGB, img) 
+  cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB, original_img)
+
+  if last_mask is not None: 
+    last_mask = cv2.resize(last_mask, (img.shape[1], img.shape[0]))
+    mask = last_mask  # use the last successful mask 
+  else:
+    # Detect face 
+    faces = mouth_detector(img) 
+    if len(faces) == 0: 
+      if last_mask is not None: 
+        last_mask = cv2.resize(last_mask, (img.shape[1], img.shape[0]))
+        mask = last_mask  # use the last successful mask 
+      else: 
+        cv2.cvtColor(img, cv2.COLOR_BGR2RGB, img) 
+        return img, None 
+    else: 
+        face = faces[0] 
+        shape = predictor(img, face) 
+    
+        # Get points for mouth 
+        mouth_points = np.array([[shape.part(i).x, shape.part(i).y] for i in range(48, 68)]) 
+
+        # Calculate bounding box dimensions
+        x, y, w, h = cv2.boundingRect(mouth_points)
+
+        # Set kernel size as a fraction of bounding box size
+        kernel_size = int(max(w, h) * args.mask_dilation)
+        #if kernel_size % 2 == 0:  # Ensure kernel size is odd
+          #kernel_size += 1
+
+        # Create kernel
+        kernel = np.ones((kernel_size, kernel_size), np.uint8)
+
+        # Create binary mask for mouth 
+        mask = np.zeros(img.shape[:2], dtype=np.uint8) 
+        cv2.fillConvexPoly(mask, mouth_points, 255)
+
+        last_mask = mask  # Update last_mask with the new mask
+  
+  # Dilate the mask
+  dilated_mask = cv2.dilate(mask, kernel)
+
+  # Calculate distance transform of dilated mask
+  dist_transform = cv2.distanceTransform(dilated_mask, cv2.DIST_L2, 5)
+
+  # Normalize distance transform
+  cv2.normalize(dist_transform, dist_transform, 0, 255, cv2.NORM_MINMAX)
+
+  # Convert normalized distance transform to binary mask and convert it to uint8
+  _, masked_diff = cv2.threshold(dist_transform, 50, 255, cv2.THRESH_BINARY)
+  masked_diff = masked_diff.astype(np.uint8)
+  
+  #make sure blur is an odd number
+  blur = args.mask_feathering
+  if blur % 2 == 0:
+    blur += 1
+  # Set blur size as a fraction of bounding box size
+  blur = int(max(w, h) * blur)  # 10% of bounding box size
+  if blur % 2 == 0:  # Ensure blur size is odd
+    blur += 1
+  masked_diff = cv2.GaussianBlur(masked_diff, (blur, blur), 0)
+
+  # Convert numpy arrays to PIL Images
+  input1 = Image.fromarray(img)
+  input2 = Image.fromarray(original_img)
+
+  # Convert mask to single channel where pixel values are from the alpha channel of the current mask
+  mask = Image.fromarray(masked_diff)
+
+  # Ensure images are the same size
+  assert input1.size == input2.size == mask.size
+
+  # Paste input1 onto input2 using the mask
+  input2.paste(input1, (0,0), mask)
+
+  # Convert the final PIL Image back to a numpy array
+  input2 = np.array(input2)
+
+  #input2 = cv2.cvtColor(input2, cv2.COLOR_BGR2RGB)
   cv2.cvtColor(input2, cv2.COLOR_BGR2RGB, input2)
   
   return input2, mask
@@ -438,17 +613,22 @@ def main():
 )):
         if i == 0:
 
-          if not args.no_seg==True:
-            print(f"mask size: {args.mask_dilation}, feathering: {args.mask_feathering}")
-          
-          #if not args.no_sr==True:
-          print("Loading", args.sr_model)
-          run_params = load_sr()
+          if not args.quality=='Fast':
+            print(f"mask size: {args.mask_dilation}, feathering: {args.mask_feathering}")  
+            if not args.quality=='Improved':   
+              print("Loading", args.sr_model)
+              run_params = load_sr()
+
+          '''print("Starting...")
+          frame_h, frame_w = full_frames[0].shape[:-1]
+          out = cv2.VideoWriter('temp/result.avi',
+                                  cv2.VideoWriter_fourcc(*'MJPG'), fps, (frame_w, frame_h))'''
 
           print("Starting...")
           frame_h, frame_w = full_frames[0].shape[:-1]
-          out = cv2.VideoWriter('temp/result.avi',
-                                  cv2.VideoWriter_fourcc(*'MJPG'), fps, (frame_w, frame_h))
+          fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Be sure to use lower case
+          out = cv2.VideoWriter('temp/result.mp4', fourcc, fps, (frame_w, frame_h))
+
         img_batch = torch.FloatTensor(np.transpose(img_batch, (0, 3, 1, 2))).to('cuda')
         mel_batch = torch.FloatTensor(np.transpose(mel_batch, (0, 3, 1, 2))).to('cuda')
 
@@ -462,26 +642,28 @@ def main():
             
             y1, y2, x1, x2 = c
 
-            #if args.debug_mask: #makes the background black & white so you can see the mask better
-              #f = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)
-              #f = cv2.cvtColor(f, cv2.COLOR_GRAY2BGR)
+            if args.debug_mask and args.quality in ['Enhanced', 'Improved']: #makes the background black & white so you can see the mask better
+              f = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)
+              f = cv2.cvtColor(f, cv2.COLOR_GRAY2BGR)
             of=f
             p = cv2.resize(p.astype(np.uint8), (x2 - x1, y2 - y1))
             cf = f[y1:y2, x1:x2]
 
-            if not args.no_sr:
-                p = upscale(p, run_params)
+            if args.quality=='Enhanced':
+              p = upscale(p, run_params)
+
+            if args.quality in ['Enhanced', 'Improved']:
+              last_mask = None
+              for i in range(len(frames)):
+                p, last_mask = create_mask(p, cf)
 
             f[y1:y2, x1:x2] = p
             #cv2.imwrite('temp/p.jpg', f)
 
-            if not args.no_seg:
-              #if args.debug_mask: #makes the background black & white so you can see the mask better
-                #f = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)
-                #f = cv2.cvtColor(f, cv2.COLOR_GRAY2BGR)
+            if args.quality=='Experimental':
               last_mask = None
               for i in range(len(frames)):
-                f, last_mask = create_mask(f, of,run_params)
+                f, last_mask = Experimental(f, of,run_params)
 
             if args.preview_settings:
               cv2.imwrite('temp/preview.jpg', f)
@@ -496,13 +678,21 @@ def main():
       print("converting to final video")
 
 
-      subprocess.check_call([
+      '''subprocess.check_call([
           "ffmpeg", "-y", "-loglevel", "error",
           "-i", "temp/result.avi",
           "-i", args.audio,
           "-c:v", "h264_nvenc",
           args.outfile ,
+      ])'''
+      subprocess.check_call([
+        "ffmpeg", "-y", "-loglevel", "error",
+        "-i", "temp/result.mp4",
+        "-i", args.audio,
+        "-c:v", "h264_nvenc",
+        args.outfile ,
       ])
+
 
 model = detector = detector_model = None
 def do_load(checkpoint_path):
