@@ -620,11 +620,6 @@ def main():
               print("Loading", args.sr_model)
               run_params = load_sr()
 
-          '''print("Starting...")
-          frame_h, frame_w = full_frames[0].shape[:-1]
-          out = cv2.VideoWriter('temp/result.avi',
-                                  cv2.VideoWriter_fourcc(*'MJPG'), fps, (frame_w, frame_h))'''
-
           print("Starting...")
           frame_h, frame_w = full_frames[0].shape[:-1]
           fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # Be sure to use lower case
@@ -678,14 +673,6 @@ def main():
     if not args.preview_settings:
       print("converting to final video")
 
-
-      '''subprocess.check_call([
-          "ffmpeg", "-y", "-loglevel", "error",
-          "-i", "temp/result.avi",
-          "-i", args.audio,
-          "-c:v", "h264_nvenc",
-          args.outfile ,
-      ])'''
       subprocess.check_call([
         "ffmpeg", "-y", "-loglevel", "error",
         "-i", "temp/result.mp4",
