@@ -143,3 +143,10 @@ def load_file_from_url(url, model_dir=None, progress=True, file_name=None):
         print(f'Downloading: "{url}" to {cached_file}\n')
         download_url_to_file(url, cached_file, hash_prefix=None, progress=progress)
     return cached_file
+
+def g_colab():
+    try:
+        import google.colab
+        return True
+    except ImportError:
+        return False
