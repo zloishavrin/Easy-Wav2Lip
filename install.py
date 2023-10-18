@@ -1,0 +1,60 @@
+version = 'unstable'
+import os
+import re
+import argparse
+from IPython.display import clear_output
+from easy_functions import (format_time,
+                            load_file_from_url,
+                            load_model,
+                            load_predictor,
+                            g_colab)
+from enhance import load_sr
+
+parser = argparse.ArgumentParser(description='Install Easy-Wav2Lip')
+
+parser.add_argument('--ver', type=str,  default='unstable',
+                    help='Which branch to install', required=False)
+
+args = parser.parse_args()
+
+if not g_colab():
+  import git
+  import shutil
+  os.chdir('Easy-Wav2Lip')
+  os.makedirs('face_alignment', exist_ok=True)
+  os.makedirs('temp', exist_ok=True)
+  git.Git(".").clone("https://github.com/1adrianb/face-alignment.git")
+  shutil.move('face-alignment/face_alignment/', 'face_alignment/')
+  shutil.rmtree('face-alignment')
+
+
+working_directory = os.getcwd()
+
+#download and initialize both wav2lip models
+print('downloading wav2lip essentials')
+load_file_from_url(
+  url='https://github.com/anothermartz/Easy-Wav2Lip/releases/download/Prerequesits/wav2lip_gan.pth',
+  model_dir='checkpoints', progress=True, file_name='wav2lip_gan.pth')
+model = load_model(os.path.join(working_directory,'checkpoints','wav2lip_gan.pth'))
+print('wav2lip_gan loaded')
+load_file_from_url(
+  url='https://github.com/anothermartz/Easy-Wav2Lip/releases/download/Prerequesits/Wav2Lip.pth',
+  model_dir='checkpoints', progress=True, file_name='Wav2Lip.pth')
+model = load_model(os.path.join(working_directory,'checkpoints','Wav2Lip.pth'))
+print('wav2lip loaded')
+
+#download gfpgan files
+print("downloading gfpgan essentials")
+load_file_from_url(
+  url='https://github.com/anothermartz/Easy-Wav2Lip/releases/download/Prerequesits/GFPGANv1.4.pth',
+  model_dir='checkpoints', progress=True, file_name='GFPGANv1.4.pth')
+load_sr()
+
+#load face detectors
+print('initializing face detectors')
+load_predictor()
+
+#write a file to signify setup is done
+with open('installed.txt', 'w') as f:
+    f.write(args.ver)
+print("Installation complete!")
