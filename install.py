@@ -23,9 +23,9 @@ working_directory = os.getcwd()
 #download and initialize both wav2lip models
 print('downloading wav2lip essentials')
 load_file_from_url(
-  url='https://github.com/anothermartz/Easy-Wav2Lip/releases/download/Prerequesits/wav2lip_gan.pth',
+  url='https://github.com/anothermartz/Easy-Wav2Lip/releases/download/Prerequesits/Wav2Lip_GAN.pth',
   model_dir='checkpoints', progress=True, file_name='wav2lip_gan.pth')
-model = load_model(os.path.join(working_directory,'checkpoints','wav2lip_gan.pth'))
+model = load_model(os.path.join(working_directory,'checkpoints','Wav2Lip_GAN.pth'))
 print('wav2lip_gan loaded')
 load_file_from_url(
   url='https://github.com/anothermartz/Easy-Wav2Lip/releases/download/Prerequesits/Wav2Lip.pth',
