@@ -3,6 +3,4 @@ gfpgan
 dlib
 gdown
 gitpython
-pytorch
-torchvision
-cudatoolkit
+torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
