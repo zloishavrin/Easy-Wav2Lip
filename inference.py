@@ -37,6 +37,8 @@ print('\rloading upscale', end='')
 from enhance import upscale
 print('\rloading load_sr', end='')
 from enhance import load_sr
+print('\rloading load_model', end='')
+from easy_functions import load_model
 
 print('\rimports loaded!')
 
@@ -508,27 +510,6 @@ def _load(checkpoint_path):
         checkpoint = torch.load(checkpoint_path,
                                 map_location=lambda storage, loc: storage)
     return checkpoint
-
-def load_model(path, results_file='models/model.pkl'):
-    # If results file exists, load it and return
-    results_file = 'models/'+re.search(r"[^\/]+(?=\.\w+$)", path).group()+'.pk1'
-    if os.path.exists(results_file):
-        with open(results_file, 'rb') as f:
-            return pickle.load(f)
-    model = Wav2Lip()
-    print("Loading {}".format(path))
-    checkpoint = _load(path)
-    s = checkpoint["state_dict"]
-    new_s = {}
-    for k, v in s.items():
-        new_s[k.replace('module.', '')] = v
-    model.load_state_dict(new_s)
-
-    model = model.to(device)
-        # Save results to file
-    with open(results_file, 'wb') as f:
-        pickle.dump(model.eval(), f)
-    return model.eval()
 
 def main():
     args.img_size = 96
