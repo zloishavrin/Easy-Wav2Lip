@@ -3,3 +3,6 @@ gfpgan
 dlib
 gdown
 gitpython
+pytorch
+torchvision
+cudatoolkit
