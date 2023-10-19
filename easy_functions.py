@@ -65,9 +65,12 @@ def _load(checkpoint_path):
                                 map_location=lambda storage, loc: storage)
     return checkpoint
 
-def load_model(path, results_file='models/model.pkl'):
+def load_model(path):
     # If results file exists, load it and return
-    results_file = 'models/'+re.search(r"[^\/]+(?=\.\w+$)", path).group()+'.pk1'
+    working_directory = os.getcwd()
+    folder, filename_with_extension = os.path.split(path)
+    filename, file_type = os.path.splitext(filename_with_extension)
+    results_file = os.path.join(folder,filename+'.pk1')
     if os.path.exists(results_file):
         with open(results_file, 'rb') as f:
             return pickle.load(f)
