@@ -2,5 +2,4 @@ batch_face
 gfpgan
 dlib
 gdown
-gitpython
 torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
