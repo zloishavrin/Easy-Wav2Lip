@@ -17,8 +17,8 @@ import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-video_file = config['INPUTS']['video_file']
-vocal_file = config['INPUTS']['vocal_file']
+video_file = config['OPTIONS']['video_file']
+vocal_file = config['OPTIONS']['vocal_file']
 quality = config['OPTIONS']['quality']
 output_height = config['OPTIONS']['output_height']
 wav2lip_version = config['OPTIONS']['wav2lip_version']
