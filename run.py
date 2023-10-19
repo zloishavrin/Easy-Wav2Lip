@@ -315,7 +315,7 @@ while True:
     with open('last_file.txt', 'w') as f:
       f.write(temp_input_video)
     print(f"{output_filename} successfully lip synced! It will be found here:")
-    print(folder)
+    print(output_video)
 
     end_time = time.time()
     elapsed_time = end_time - start_time
