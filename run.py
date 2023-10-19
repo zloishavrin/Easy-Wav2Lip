@@ -240,8 +240,8 @@ while True:
                                       input_videofile)
     preview_audio_path = os.path.join(temp_folder,"preview_" + input_audiofile)
 
-    subprocess.call(['ffmpeg', '-i', temp_input_video, '-ss', str(preview_start_time), '-to', str(preview_start_time+preview_length_seconds), '-c', 'copy', preview_video_path])
-    subprocess.call(['ffmpeg', '-i', temp_input_audio, '-ss', str(preview_start_time), '-to', str(preview_start_time+1), '-c', 'copy', preview_audio_path])
+    subprocess.call(['ffmpeg', "-loglevel", "error", '-i', temp_input_video, '-ss', str(preview_start_time), '-to', str(preview_start_time+preview_length_seconds), '-c', 'copy', preview_video_path])
+    subprocess.call(['ffmpeg', "-loglevel", "error", '-i', temp_input_audio, '-ss', str(preview_start_time), '-to', str(preview_start_time+1), '-c', 'copy', preview_audio_path])
     temp_input_video = preview_video_path
     temp_input_audio = preview_audio_path
 
@@ -298,8 +298,7 @@ while True:
 
   if preview_settings:
     if os.path.isfile(os.path.join(temp_folder,'preview.jpg')):
-      clear_output()
-      display(Image(os.path.join(temp_folder,'preview.jpg')))
+      print(f"preview successful! Check out temp/preview.jpg")
       with open('last_file.txt', 'w') as f:
        f.write(temp_input_video)
       break
@@ -315,15 +314,13 @@ while True:
     #show output video
     with open('last_file.txt', 'w') as f:
       f.write(temp_input_video)
-    clear_output()
-    print(f"{output_filename} successfully lip synced! Find it in the same folder as your input file(s).")
+    print(f"{output_filename} successfully lip synced! It will be found here:")
+    print(folder)
 
     end_time = time.time()
     elapsed_time = end_time - start_time
     formatted_setup_time = format_time(elapsed_time)
     print(f"Execution time: {formatted_setup_time}")
-    print(f"Loading video preview for {output_videofile}...")
-    show_video(temp_output)
 
   else:
       print(f"Processing failed! :( see line above 👆")
