@@ -2,6 +2,7 @@ version = 'unstable'
 import os
 import re
 import argparse
+import shutil
 from IPython.display import clear_output
 from easy_functions import (format_time,
                             load_file_from_url,
@@ -16,17 +17,6 @@ parser.add_argument('--ver', type=str,  default='unstable',
                     help='Which branch to install', required=False)
 
 args = parser.parse_args()
-
-if not g_colab():
-  import git
-  import shutil
-  os.chdir('Easy-Wav2Lip')
-  os.makedirs('face_alignment', exist_ok=True)
-  os.makedirs('temp', exist_ok=True)
-  git.Git(".").clone("https://github.com/1adrianb/face-alignment.git")
-  shutil.move('face-alignment/face_alignment/', 'face_alignment/')
-  shutil.rmtree('face-alignment')
-
 
 working_directory = os.getcwd()
 
