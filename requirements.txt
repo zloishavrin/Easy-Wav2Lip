@@ -6,3 +6,4 @@ gdown
 torch
 torchvision
 torchaudio
+moviepy
