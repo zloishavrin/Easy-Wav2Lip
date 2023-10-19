@@ -679,7 +679,6 @@ def main():
 
     out.release()
     
-    print("wav2lip completion time:", time() - s)
     if str(args.preview_settings) == 'False':
       print("converting to final video")
 
