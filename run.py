@@ -42,22 +42,18 @@ working_directory = os.getcwd()
 
 
 start_time = time.time()
-if quality == "Fast":
-  no_sr=True
-  better_mask=False
-if quality == "Improved":
-  no_sr=True
-  better_mask=True
-if quality == "Enhanced":
-  no_sr=False
-  better_mask=True
+
+# check video_file exists
+if video_file=='':
+  sys.exit(f'video_file cannot be blank')
+
+if not os.path.exists(video_file):
+  sys.exit(f'Could not find file: {video_file}')
 
 if wav2lip_version=="Wav2Lip_GAN":
   checkpoint_path = os.path.join(working_directory,'checkpoints','wav2lip_gan.pth')
 else:
   checkpoint_path = os.path.join(working_directory,'checkpoints','Wav2Lip.pth')
-
-
 
 if feathering == 3:
   feathering = 5
@@ -126,10 +122,6 @@ pad_right = str(round(R * resolution_scale))
 
 
 ######################### reconstruct input paths ##############################
-# check video_file exists
-if video_file=='':
-  sys.exit(f'video_file cannot be blank')
-
 # Extract each part of the path
 folder, filename_with_extension = os.path.split(video_file)
 filename, file_type = os.path.splitext(filename_with_extension)
