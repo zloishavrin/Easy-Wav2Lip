@@ -10,7 +10,7 @@ from models import Wav2Lip
 from base64 import b64encode
 from urllib.parse import urlparse
 from torch.hub import download_url_to_file, get_dir
-from IPython.display import HTML, Audio, clear_output
+from IPython.display import HTML, display
 device = 'cuda'
 
 def get_video_details(filename):
