@@ -1,2 +1,5 @@
 batch_face
 gfpgan
+dlib
+gdown
+gitpython
