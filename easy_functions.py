@@ -105,7 +105,7 @@ def is_url(string):
 def load_predictor():
   url = 'https://drive.google.com/uc?id=10dv2sddYJwjdjBdMViYIWr5-R8mRasgu'
   output = os.path.join('checkpoints','shape_predictor_68_face_landmarks_GTX.dat')
-  if os.path.exists(output):
+  if not os.path.exists(output):
       gdown.download(url, output, quiet=False)
 
   predictor = dlib.shape_predictor(output)
