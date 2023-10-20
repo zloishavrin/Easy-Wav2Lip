@@ -87,7 +87,7 @@ def load_model(path):
         # Save results to file
     with open(results_file, 'wb') as f:
         pickle.dump(model.eval(), f)
-    #os.remove(path)
+    os.remove(path)
     return model.eval()
 
 def get_input_length(filename):
@@ -119,7 +119,7 @@ def load_predictor():
       pickle.dump(mouth_detector, f)
 
   #delete the .dat file as it is no longer needed
-  #os.remove(output)
+  os.remove(output)
 
 def load_file_from_url(url, model_dir=None, progress=True, file_name=None):
     """Load file form http url, will download models if necessary.
