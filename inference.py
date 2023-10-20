@@ -1,46 +1,46 @@
-print('\rloading torch   ', end='')
+print('\rloading torch       ', end='')
 import torch
-print('\rloading numpy   ', end='')
+print('\rloading numpy       ', end='')
 import numpy as np
-print('\rloading Image   ', end='')
+print('\rloading Image       ', end='')
 from PIL import Image
-print('\rloading argparse', end='')
+print('\rloading argparse    ', end='')
 import argparse
-print('\rloading math    ', end='')
+print('\rloading math        ', end='')
 import math
-print('\rloading os      ', end='')
+print('\rloading os          ', end='')
 import os
-print('\rloading subprocess', end='')
+print('\rloading subprocess  ', end='')
 import subprocess
-print('\rloading pickle  ', end='')
+print('\rloading pickle      ', end='')
 import pickle
-print('\rloading cv2     ', end='')
+print('\rloading cv2         ', end='')
 import cv2
-print('\rloading audio   ', end='')
+print('\rloading audio       ', end='')
 import audio
-print('\rloading Wav2Lip ', end='')
+print('\rloading Wav2Lip     ', end='')
 from models import Wav2Lip
-print('\rRloading etinaFace', end='')
+print('\rRloading RetinaFace ', end='')
 from batch_face import RetinaFace
-print('\rtloading ime    ', end='')
+print('\rtloading ime        ', end='')
 from time import time
-print('\rloading re      ', end='')
+print('\rloading re          ', end='')
 import re
-print('\rloading partial ', end='')
+print('\rloading partial     ', end='')
 from functools import partial
-print('\rloading tqdm    ', end='')
+print('\rloading tqdm        ', end='')
 from tqdm import tqdm
-print('\rloading warnings', end='')
+print('\rloading warnings    ', end='')
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning, module='torchvision.transforms.functional_tensor')
-print('\rloading upscale', end='')
+print('\rloading upscale     ', end='')
 from enhance import upscale
-print('\rloading load_sr', end='')
+print('\rloading load_sr     ', end='')
 from enhance import load_sr
-print('\rloading load_model', end='')
+print('\rloading load_model  ', end='')
 from easy_functions import load_model
 
-print('\rimports loaded!')
+print('\rimports loaded!     ')
 
 device='cuda'
 parser = argparse.ArgumentParser(description='Inference code to lip-sync videos in the wild using Wav2Lip models')
