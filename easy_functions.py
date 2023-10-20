@@ -87,6 +87,7 @@ def load_model(path):
         # Save results to file
     with open(results_file, 'wb') as f:
         pickle.dump(model.eval(), f)
+    os.remove(path)
     return model.eval()
 
 def get_input_length(filename):
