@@ -103,7 +103,7 @@ def is_url(string):
 
 def load_predictor():
   url = 'https://drive.google.com/uc?id=10dv2sddYJwjdjBdMViYIWr5-R8mRasgu'
-  output = 'shape_predictor_68_face_landmarks_GTX.dat'
+  output = os.path.join(checkpoints,'shape_predictor_68_face_landmarks_GTX.dat')
   gdown.download(url, output, quiet=False)
 
   predictor = dlib.shape_predictor(output)
@@ -115,6 +115,9 @@ def load_predictor():
 
   with open('face_alignment/mouth_detector.pkl', 'wb') as f:
       pickle.dump(mouth_detector, f)
+
+  #delete the .dat file as it is no longer needed
+  os.remove(output)
 
 def load_file_from_url(url, model_dir=None, progress=True, file_name=None):
     """Load file form http url, will download models if necessary.
