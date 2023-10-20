@@ -105,16 +105,17 @@ def is_url(string):
 def load_predictor():
   url = 'https://drive.google.com/uc?id=10dv2sddYJwjdjBdMViYIWr5-R8mRasgu'
   output = os.path.join('checkpoints','shape_predictor_68_face_landmarks_GTX.dat')
-  gdown.download(url, output, quiet=False)
+  if os.path.exists(output):
+      gdown.download(url, output, quiet=False)
 
   predictor = dlib.shape_predictor(output)
   mouth_detector = dlib.get_frontal_face_detector()
 
   # Serialize the variables
-  with open('face_alignment/predictor.pkl', 'wb') as f:
+  with open(os.path.join('checkpoints','predictor.pkl', 'wb') as f:
       pickle.dump(predictor, f)
 
-  with open('face_alignment/mouth_detector.pkl', 'wb') as f:
+  with open(os.path.join('checkpoints','mouth_detector.pkl', 'wb') as f:
       pickle.dump(mouth_detector, f)
 
   #delete the .dat file as it is no longer needed
