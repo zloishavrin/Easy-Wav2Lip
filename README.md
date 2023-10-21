@@ -11,6 +11,7 @@ Colab link: [https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/
 1. Download Easy-Wav2Lip.bat
 2. Place it in a folder on your PC (EG: in Documents)
 3. Run it and follow the instructions!
+   
 It will check for all required software needed to run and download and prompt you to install any not already installed!
 It will then install Easy-Wav2Lip and run it in a loop of configuring the file and processing until you close it.
 It will also check for updates to Easy-Wav2Lip!
