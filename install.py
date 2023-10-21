@@ -7,8 +7,7 @@ from IPython.display import clear_output
 from easy_functions import (format_time,
                             load_file_from_url,
                             load_model,
-                            load_predictor,
-                            g_colab)
+                            load_predictor)
 from enhance import load_sr
 
 parser = argparse.ArgumentParser(description='Install Easy-Wav2Lip')
