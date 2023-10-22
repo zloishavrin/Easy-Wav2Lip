@@ -6,18 +6,37 @@ Colab link: [https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v7/Easy_Wav2Lip_v7.ipynb)
 
-### For the easiest way to install locally on Windows 10 or 11, 64-Bit with a non-ARM processor:
+### For the easiest way to install locally on Windows 10 or 11, 64-Bit with a non-ARM processor and an NVIDIA GPU:
 
 1. Download Easy-Wav2Lip.bat
 2. Place it in a folder on your PC (EG: in Documents)
-3. Run it and follow the instructions!
-   
-It will check for all required software needed to run and download and prompt you to install any not already installed!
-It will then install Easy-Wav2Lip and run it in a loop of configuring the file and processing until you close it.
-It will also check for updates to Easy-Wav2Lip!
+3. Run it and follow the instructions.
+
+Easy-Wav2Lip.bat will automatically check for and install the required software, download and install Easy-Wav2Lip, then run it in a loop of configuration and processing until you close it. It will also check for updates to Easy-Wav2Lip.
+
+_If anyone is able to convert Easy-Wav2Lip.bat to work on unix systems, it will very appreciated!_
 
 ### For other platforms (untested!) or just to manually install:
+1. Make sure the following are installed and can be accessed via your terminal:
+      * Python (I have only tested 3.10.11 - other versions may not work!)
+      * Git
+      * ffmpeg, ffplay, ffprobe
+      * Visual Studio Tools C++ module
+      * Cuda (Just having the latest Nvidia drivers will do this)
+2. Run the following in your terminal:
+```
+git clone https://github.com/anothermartz/Easy-Wav2Lip.git
+cd Easy-Wav2Lip
+pip install -r requirements.txt
+python install.py
+```
+Then:
+MacOS/Linux:
+`./run_loop.sh`
+Windows:
+`call loop_bat.bat`
 
+Please let me know if you have success running this on MacOS, Linux, an AMD GPU or an ARM proessor, I'm expecting at least one of those won't work but I won't be able to test/fix these myself.
 
 # Credits:
 * Most of the code comes from [cog-Wav2Lip](https://github.com/devxpy/cog-Wav2Lip)
