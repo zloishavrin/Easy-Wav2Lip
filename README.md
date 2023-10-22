@@ -34,7 +34,7 @@ Then:
 MacOS/Linux:
 `./run_loop.sh`
 Windows:
-`call loop_bat.bat`
+`call run_loop.bat`
 
 Please let me know if you have success running this on MacOS, Linux, an AMD GPU or an ARM proessor, I'm expecting at least one of those won't work but I won't be able to test/fix these myself.
 
