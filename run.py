@@ -299,6 +299,7 @@ while True:
       elapsed_time = end_time - start_time
       formatted_setup_time = format_time(elapsed_time)
       print(f"Execution time: {formatted_setup_time}")
+      break
 
     else:
       print(f"Processing failed! :( see line above 👆")
