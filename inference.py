@@ -116,10 +116,10 @@ parser.add_argument('--mask_feathering', default=151, type=int,
 parser.add_argument('--quality', type=str, help='Choose between Fast, Improved, Enhanced and Experimental', 
                                 default='Fast')            
 
-with open('face_alignment/predictor.pkl', 'rb') as f:
+with open(os.path.join('checkpoints','predictor.pkl'), 'rb') as f:
     predictor = pickle.load(f)
 
-with open('face_alignment/mouth_detector.pkl', 'rb') as f:
+with open(os.path.join('checkpoints','mouth_detector.pkl'), 'rb') as f:
     mouth_detector = pickle.load(f)
 
 #creating variables to prevent failing when a face isn't detected
