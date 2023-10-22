@@ -37,7 +37,7 @@ MacOS/Linux:
 Windows:
 `call run_loop.bat`
 
-Please let me know if you have success running this on MacOS, Linux, an AMD GPU or an ARM proessor, I'm expecting at least one of those won't work but I won't be able to test/fix these myself.
+Please let me know if you have success running this on MacOS, Linux, an AMD GPU or an ARM proessor and if you did or didn't do anything special to get it working.
 
 # Credits:
 * Most of the code comes from [cog-Wav2Lip](https://github.com/devxpy/cog-Wav2Lip)
