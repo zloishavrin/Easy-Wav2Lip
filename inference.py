@@ -562,7 +562,7 @@ def main():
           ])
         args.audio = 'temp/temp.wav'
         
-    print('analysing frames...')
+    print('analysing audio...')
     wav = audio.load_wav(args.audio, 16000)
     mel = audio.melspectrogram(wav)
  
