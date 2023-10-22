@@ -224,7 +224,7 @@ while True:
   temp_input_videofile = os.path.basename(renamed_temp_input_video)
   temp_input_audio =  os.path.join(temp_folder,input_audiofile)
 
-    #trim video if it's longer than the audio
+  #trim video if it's longer than the audio
   video_length = get_input_length(temp_input_video)
   audio_length = get_input_length(temp_input_audio)
 
@@ -254,7 +254,7 @@ while True:
     temp_input_video = trimmed_video_path
 
   #check if face detection has already happened on this clip
-  last_detected_face = os.path.join(working_directory,'face_alignment','last_detected_face.pkl')
+  last_detected_face = os.path.join(working_directory,'checkpoints','last_detected_face.pkl')
   if os.path.isfile('last_file.txt'):
     with open('last_file.txt', 'r') as file:
       last_file = file.readline()
@@ -294,7 +294,12 @@ while True:
       print(f"preview successful! Check out temp/preview.jpg")
       with open('last_file.txt', 'w') as f:
        f.write(temp_input_video)
-      break
+      #end processing timer and format the time it took
+      end_time = time.time()
+      elapsed_time = end_time - start_time
+      formatted_setup_time = format_time(elapsed_time)
+      print(f"Execution time: {formatted_setup_time}")
+
     else:
       print(f"Processing failed! :( see line above 👆")
       sys.exit("Processing failed")
@@ -309,13 +314,7 @@ while True:
       f.write(temp_input_video)
     print(f"{output_filename} successfully lip synced! It will be found here:")
     print(output_video)
-
-    #end processing timer and format the time it took
-    end_time = time.time()
-    elapsed_time = end_time - start_time
-    formatted_setup_time = format_time(elapsed_time)
-    print(f"Execution time: {formatted_setup_time}")
-
+  
   else:
       print(f"Processing failed! :( see line above 👆")
       process_failed = True
