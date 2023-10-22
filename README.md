@@ -8,11 +8,11 @@ Colab link: [https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/
 
 ### For the easiest way to install locally on Windows 10 or 11, 64-Bit with a non-ARM processor and an NVIDIA GPU:
 
-1. Download Easy-Wav2Lip.bat
+1. Download [Easy-Wav2Lip.bat](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/v8_release/Easy-Wav2Lip.bat)
 2. Place it in a folder on your PC (EG: in Documents)
 3. Run it and follow the instructions.
 
-Easy-Wav2Lip.bat will automatically check for and install the required software, download and install Easy-Wav2Lip, then run it in a loop of configuration and processing until you close it. It will also check for updates to Easy-Wav2Lip.
+[Easy-Wav2Lip.bat](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/v8_release/Easy-Wav2Lip.bat) will automatically check for and install the required software, download and install Easy-Wav2Lip, then run it in a loop of configuration and processing until you close it. It will also check for updates to Easy-Wav2Lip.
 
 _If anyone is able to convert Easy-Wav2Lip.bat to work on unix systems, it will very appreciated!_
 
