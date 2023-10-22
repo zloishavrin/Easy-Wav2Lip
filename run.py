@@ -196,7 +196,8 @@ while True:
   output_videofile = os.path.basename(output_video)
 
   # remove last outputs
-  shutil.rmtree('temp')
+  if os.path.exists('temp'):
+    shutil.rmtree('temp')
   os.makedirs('temp', exist_ok=True)
 
   # preview inputs (if enabled)
