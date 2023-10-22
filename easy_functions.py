@@ -112,10 +112,10 @@ def load_predictor():
   mouth_detector = dlib.get_frontal_face_detector()
 
   # Serialize the variables
-  with open('face_alignment/predictor.pkl', 'wb') as f:
+  with open(os.path.join('checkpoints','predictor.pkl'), 'wb') as f:
       pickle.dump(predictor, f)
 
-  with open('face_alignment/mouth_detector.pkl', 'wb') as f:
+  with open(os.path.join('checkpoints','mouth_detector.pkl'), 'wb') as f:
       pickle.dump(mouth_detector, f)
 
   #delete the .dat file as it is no longer needed
