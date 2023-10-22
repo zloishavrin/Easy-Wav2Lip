@@ -418,7 +418,7 @@ def get_smoothened_boxes(boxes, T):
         boxes[i] = np.mean(window, axis=0)
     return boxes
 
-def face_detect(images, results_file='face_alignment/last_detected_face.pkl'):
+def face_detect(images, results_file=os.path.join('checkpoints','last_detected_face.pkl')):
     # If results file exists, load it and return
     if os.path.exists(results_file):
         print('Using face detection data from last input')
