@@ -289,13 +289,6 @@ while True:
   # Run the command
   subprocess.run(cmd)
 
-
-  #end processing timer and format the time it took
-  end_time = time.time()
-  elapsed_time = end_time - start_time
-  process_time = int(elapsed_time)
-  formatted_process_time = format_time(elapsed_time)
-
   if preview_settings:
     if os.path.isfile(os.path.join(temp_folder,'preview.jpg')):
       print(f"preview successful! Check out temp/preview.jpg")
@@ -317,6 +310,7 @@ while True:
     print(f"{output_filename} successfully lip synced! It will be found here:")
     print(output_video)
 
+    #end processing timer and format the time it took
     end_time = time.time()
     elapsed_time = end_time - start_time
     formatted_setup_time = format_time(elapsed_time)
