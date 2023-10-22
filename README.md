@@ -39,6 +39,18 @@ Windows:
 
 Please let me know if you have success running this on MacOS, Linux, an AMD GPU or an ARM proessor and if you did or didn't do anything special to get it working.
 
+## Usage:
+* Once everything is installed, a file called config.ini should pop up.
+* Add the path(s) to your video and audio files here and configure the settings to your liking.
+     * Pro Tip:
+     * On Windows you can press Shift+Right Click on the file you want, then press "a" or click "copy as path"
+     * On MacOS you can Right Click or Control+Click on the file you want, hold options and click "copy as Pathname"
+     * This will put the file path in your clipboard to paste as video_path or vocal_track (with or without quotes, it doesn't matter)
+       
+* Save config.ini and close it, this will start the Wav2Lip process and your file will be saved in the same directory as your video_path file.
+* config.ini will open again and you can change inputs and settings.
+* See [Advanced Tweaking](https://github.com/anothermartz/Easy-Wav2Lip/blob/v8/README.md#advanced-tweaking) below for the explanation of the settings not already explained in config.ini
+
 # Credits:
 * Most of the code comes from [cog-Wav2Lip](https://github.com/devxpy/cog-Wav2Lip)
 * Which is an improvement on the original [Wav2Lip](https://github.com/Rudrabha/Wav2Lip)
