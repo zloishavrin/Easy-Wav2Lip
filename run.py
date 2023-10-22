@@ -47,6 +47,9 @@ working_directory = os.getcwd()
 
 start_time = time.time()
 
+video_file = video_file.strip('\"')
+vocal_file = vocal_file.strip('\"')
+
 # check video_file exists
 if video_file=='':
   sys.exit(f'video_file cannot be blank')
