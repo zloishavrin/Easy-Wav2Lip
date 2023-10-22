@@ -22,8 +22,6 @@ print('\rloading Wav2Lip     ', end='')
 from models import Wav2Lip
 print('\rRloading RetinaFace ', end='')
 from batch_face import RetinaFace
-print('\rtloading ime        ', end='')
-from time import time
 print('\rloading re          ', end='')
 import re
 print('\rloading partial     ', end='')
@@ -591,8 +589,6 @@ def main():
       gen = datagen(full_frames, mel_chunks)
     else:
       gen = datagen(full_frames.copy(), mel_chunks)
-
-    s = time()
 
     for i, (img_batch, mel_batch, frames, coords) in enumerate(tqdm(
     gen,
