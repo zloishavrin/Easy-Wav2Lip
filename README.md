@@ -22,7 +22,7 @@ _If anyone is able to convert Easy-Wav2Lip.bat to work on unix systems, it will 
       * Git
       * ffmpeg, ffplay, ffprobe
       * Visual Studio Tools C++ module
-      * Cuda (Just having the latest Nvidia drivers will do this)
+      * Cuda (Just having the latest Nvidia drivers will do this, I have only tested 12.2)
 2. Run the following in your terminal:
 ```
 git clone https://github.com/anothermartz/Easy-Wav2Lip.git
