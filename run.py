@@ -315,6 +315,12 @@ while True:
       f.write(temp_input_video)
     print(f"{output_filename} successfully lip synced! It will be found here:")
     print(output_video)
+
+    #end processing timer and format the time it took
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    formatted_setup_time = format_time(elapsed_time)
+    print(f"Execution time: {formatted_setup_time}")
   
   else:
       print(f"Processing failed! :( see line above 👆")
