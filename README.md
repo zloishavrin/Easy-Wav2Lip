@@ -1,4 +1,39 @@
-# Audio to video lipsyncing made easy!
+## Easy-Wav2Lip improves Wav2Lip video lipsyncing and is:
+
+## Easier:
+* Simple setup and execution - locally and via colab.
+     * no messing about manually downloading and installing prerequesits
+     * Google Colab has only 2 cells to execute
+     * Windows users only need one file to install, update and run.
+* Well documented options below.
+     * No more wondering what anything does!
+
+## Faster:
+For my 9 second 720p 60fps test clip via Colab T4:
+| Original Wav2Lip | Easy-Wav2Lip |
+|:-------|:-----|
+| Execution time: 6m 53s | Execution time: 56s |
+
+That's not a typo! My clip goes from almost 7 minutes to under 1 minute!
+
+The tracking data is saved between generations of the same video, saving even more time:
+| Easy-Wav2Lip on the same video again |
+|:-----|
+| Execution time: 25s |
+
+## Better looking:
+
+Easy-Wav2Lip fixes visual bugs on the lips:
+
+[![Comparison gif](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/Prerequesits/wav2lipcomparison.gif)](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/Prerequesits/wav2lipcomparison.gif)
+
+It removes the low resolution square surrounding the face:
+(example coming soon)
+
+It can upscale the mouth using GFPGAN (optional):
+(example coming soon)
+
+# Installation:
 
 ### For the easiest and most compatible way to use this tool, use the Google Colab version:
 
@@ -52,10 +87,10 @@ Please let me know if you have success running this on MacOS, Linux, an AMD GPU 
 * See [Advanced Tweaking](https://github.com/anothermartz/Easy-Wav2Lip/blob/v8/README.md#advanced-tweaking) below for the explanation of the settings not already explained in config.ini
 
 # Credits:
-* Most of the code comes from [cog-Wav2Lip](https://github.com/devxpy/cog-Wav2Lip)
-* Which is an improvement on the original [Wav2Lip](https://github.com/Rudrabha/Wav2Lip)
-* Code to upscale with [GFPGAN](https://github.com/TencentARC/GFPGAN) mainly came from [wav2lip-hq-updated-ESRGAN](https://github.com/GucciFlipFlops1917/wav2lip-hq-updated-ESRGAN)
-* I couldn't have done this without AI assistance, before making this I had very minimal python experience! LLM of choice: **Bing Chat.**
+* [The Original Wav2Lip](https://github.com/Rudrabha/Wav2Lip) of course.
+* The huge speed increase and improved base quality comes from [cog-Wav2Lip](https://github.com/devxpy/cog-Wav2Lip).
+* Code to upscale with [GFPGAN](https://github.com/TencentARC/GFPGAN) mainly came from [wav2lip-hq-updated-ESRGAN](https://github.com/GucciFlipFlops1917/wav2lip-hq-updated-ESRGAN).
+* I couldn't have done this without AI assistance; Before making this I had very minimal python experience! LLM of choice: **Bing Chat.**
 * Thanks to [JustinJohn](https://github.com/justinjohn0306) for making the [Wav2Lip_simplified](https://colab.research.google.com/github/justinjohn0306/Wav2Lip/blob/master/Wav2Lip_simplified_v5.ipynb) colabs which inspired me to make my own, even simpler version.
 
 # Support
