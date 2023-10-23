@@ -2,7 +2,7 @@
 
 ## Easier:
 * Simple setup and execution - locally and via colab.
-     * no messing about manually downloading and installing prerequesits
+     * no messing around manually downloading and installing prerequesits
      * Google Colab has only 2 cells to execute
      * Windows users only need one file to install, update and run.
 * Well documented options below.
@@ -121,8 +121,8 @@ Audio files:
 ## wav2lip_version:
 | Option | Pros | Cons |
 |:-------|:-----|:-----|
-| Wav2Lip | - More accurate lipsync <br> - Closes the mouth when there is no sound | - Sometimes produces missing teeth (uncommon) |
-| Wav2Lip_GAN | - Looks nicer <br> - Keeps the original expressions of the speaker | - Less accurate lipsync <br> - Keeps the mouth similar to the original when there is no sound |
+| Wav2Lip | - More accurate lipsync <br> - Attempts to keep the mouth closed when there is no sound | - Sometimes produces missing teeth (uncommon) |
+| Wav2Lip_GAN | - Looks nicer <br> - Keeps the original expressions of the speaker | - Less accurate lipsync <br> - Not as good as masking the original lip movements especially when there is no sound |
 
 I suggest trying Wav2Lip first and switching to the GAN version if you experience an effect where it looks like the speaker has big gaps in their teeth.
 
