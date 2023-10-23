@@ -121,8 +121,8 @@ Audio files:
 ## wav2lip_version:
 | Option | Pros | Cons |
 |:-------|:-----|:-----|
-| Wav2Lip | + More accurate lipsync <br> - Attempts to keep the mouth closed when there is no sound | - Sometimes produces missing teeth (uncommon) |
-| Wav2Lip_GAN | + Looks nicer <br> - Keeps the original expressions of the speaker more | - Not very good at masking the original lip movements, especially when there is no sound |
+| Wav2Lip | + More accurate lipsync <br> + Attempts to keep the mouth closed when there is no sound | - Sometimes produces missing teeth (uncommon) |
+| Wav2Lip_GAN | + Looks nicer <br> + Keeps the original expressions of the speaker more | - Not very good at masking the original lip movements, especially when there is no sound |
 
 I suggest trying Wav2Lip first and switching to the GAN version if you experience an effect where it looks like the speaker has big gaps in their teeth.
 
