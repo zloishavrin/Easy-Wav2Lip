@@ -254,7 +254,7 @@ while True:
     temp_input_video = trimmed_video_path
 
   #check if face detection has already happened on this clip
-  last_detected_face = os.path.join(working_directory,'checkpoints','last_detected_face.pkl')
+  last_detected_face = os.path.join(working_directory,'last_detected_face.pkl')
   if os.path.isfile('last_file.txt'):
     with open('last_file.txt', 'r') as file:
       last_file = file.readline()
