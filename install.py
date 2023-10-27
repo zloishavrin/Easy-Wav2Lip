@@ -1,4 +1,4 @@
-version = 'unstable'
+version = 'v8.1'
 import os
 import re
 import argparse
