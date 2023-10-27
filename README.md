@@ -1,4 +1,4 @@
-## Easy-Wav2Lip improves Wav2Lip video lipsyncing and is:
+## Easy-Wav2Lip improves Wav2Lip video lipsyncing making it:
 
 ## Easier:
 * Simple setup and execution - locally and via colab.
@@ -27,25 +27,30 @@ Easy-Wav2Lip fixes visual bugs on the lips:
 
 [![Comparison gif](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/Prerequesits/wav2lipcomparison.gif)](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/Prerequesits/wav2lipcomparison.gif)
 
-It removes the low resolution square surrounding the face:
-(example coming soon)
+3 Options for Quality:
+* Fast: Wav2Lip
+* Improved: Wav2Lip with a feathered mask around the mouth to restore the original resolution for the rest of the face
+* Enhanced: Wav2Lip + mask + GFPGAN upscaling done on the face
 
-It can upscale the mouth using GFPGAN (optional):
-(example coming soon)
+[![Comparison gif](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/Prerequesits/JPComparison.gif)](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/Prerequesits/JPComparison.gif)
+
 
 # Installation:
 
 ### For the easiest and most compatible way to use this tool, use the Google Colab version:
 
-Colab link: [https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8/Easy_Wav2Lip_v8.ipynb](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8/Easy_Wav2Lip_v8.ipynb)
+### Google Colab:
+[https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8/Easy_Wav2Lip_v8.ipynb](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8/Easy_Wav2Lip_v8.ipynb)
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8/Easy_Wav2Lip_v8.ipynb)
+### [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8/Easy_Wav2Lip_v8.ipynb)
 
 ### For the easiest way to install locally on Windows 10 or 11, 64-Bit with a non-ARM processor and an NVIDIA GPU:
 
 1. Download [Easy-Wav2Lip.bat](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/v8_release/Easy-Wav2Lip.bat)
 2. Place it in a folder on your PC (EG: in Documents)
 3. Run it and follow the instructions.
+
+Make sure your Nvidia drivers are up to date or you may not have Cuda 12.
 
 [Easy-Wav2Lip.bat](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/v8_release/Easy-Wav2Lip.bat) will automatically check for and install the required software, download and install Easy-Wav2Lip, then run it in a loop of configuration and processing until you close it. It will also check for updates to Easy-Wav2Lip.
 
