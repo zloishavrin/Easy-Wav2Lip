@@ -40,19 +40,19 @@ Easy-Wav2Lip fixes visual bugs on the lips:
 ### For the easiest and most compatible way to use this tool, use the Google Colab version:
 
 ### Google Colab:
-[https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8/Easy_Wav2Lip_v8.ipynb](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8/Easy_Wav2Lip_v8.ipynb)
+[https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8.1/Easy_Wav2Lip_v8.1.ipynb](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8.1/Easy_Wav2Lip_v8.1.ipynb)
 
-### [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8/Easy_Wav2Lip_v8.ipynb)
+### [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8.1/Easy_Wav2Lip_v8.1.ipynb)
 
 ### For the easiest way to install locally on Windows 10 or 11, 64-Bit with a non-ARM processor and an NVIDIA GPU:
 
-1. Download [Easy-Wav2Lip.bat](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/v8_release/Easy-Wav2Lip.bat)
+1. Download [Easy-Wav2Lip.bat](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/v8.1_release/Easy-Wav2Lip_v8.1.bat)
 2. Place it in a folder on your PC (EG: in Documents)
 3. Run it and follow the instructions.
 
 Make sure your Nvidia drivers are up to date or you may not have Cuda 12.
 
-[Easy-Wav2Lip.bat](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/v8_release/Easy-Wav2Lip.bat) will automatically check for and install the required software, download and install Easy-Wav2Lip, then run it in a loop of configuration and processing until you close it. It will also check for updates to Easy-Wav2Lip.
+[Easy-Wav2Lip.bat](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/v8.1_release/Easy-Wav2Lip_v8.1.bat) will automatically check for and install the required software, download and install Easy-Wav2Lip, then run it in a loop of configuration and processing until you close it. It will also check for updates to Easy-Wav2Lip.
 
 _If anyone is able to convert Easy-Wav2Lip.bat to work on linux, it will very appreciated!_
 
