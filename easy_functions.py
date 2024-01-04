@@ -11,7 +11,7 @@ from base64 import b64encode
 from urllib.parse import urlparse
 from torch.hub import download_url_to_file, get_dir
 from IPython.display import HTML, display
-device = 'cuda'
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 def get_video_details(filename):
   cmd = ['ffprobe', '-v', 'error', '-show_format', '-show_streams', '-of', 'json', filename]
