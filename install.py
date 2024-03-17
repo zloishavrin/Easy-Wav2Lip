@@ -1,4 +1,4 @@
-version = 'v8.1fixtest'
+version = 'v8.2'
 import os
 import re
 import argparse
