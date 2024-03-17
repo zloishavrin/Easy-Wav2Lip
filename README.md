@@ -87,7 +87,8 @@ Please let me know if you have success running this on Linux, an AMD GPU or an A
        
 * Save config.ini and close it, this will start the Wav2Lip process and your file will be saved in the same directory as your video_path file.
 * config.ini will open again and you can change inputs and settings.
-* See [Advanced Tweaking](https://github.com/anothermartz/Easy-Wav2Lip/blob/v8.2/README.md#advanced-tweaking) below for the explanation of the settings not already explained in config.ini
+* See [Best Practices](https://github.com/anothermartz/Easy-Wav2Lip?tab=readme-ov-file#best-practices) below for tips on how to get started.
+* See [Advanced Tweaking](https://github.com/anothermartz/Easy-Wav2Lip?tab=readme-ov-file#advanced-tweaking) below for the explanation of the settings not already explained in config.ini
 
 # Credits:
 * [The Original Wav2Lip](https://github.com/Rudrabha/Wav2Lip) of course.
