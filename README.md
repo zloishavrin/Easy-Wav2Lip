@@ -52,7 +52,7 @@ Easy-Wav2Lip fixes visual bugs on the lips:
 
 Make sure your Nvidia drivers are up to date or you may not have Cuda 12.
 
-[Easy-Wav2Lip.bat](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/v8.1_release/Easy-Wav2Lip_v8.1.bat) will automatically check for and install the required software, download and install Easy-Wav2Lip, then run it in a loop of configuration and processing until you close it. It will also check for updates to Easy-Wav2Lip.
+[Easy-Wav2Lip.bat](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/v8.2/Easy-Wav2Lip.bat) will automatically check for and install the required software, download and install Easy-Wav2Lip, then run it in a loop of configuration and processing until you close it. It will also check for updates to Easy-Wav2Lip.
 
 _If anyone is able to convert Easy-Wav2Lip.bat to work on linux, it will very appreciated!_
 
@@ -87,7 +87,7 @@ Please let me know if you have success running this on Linux, an AMD GPU or an A
        
 * Save config.ini and close it, this will start the Wav2Lip process and your file will be saved in the same directory as your video_path file.
 * config.ini will open again and you can change inputs and settings.
-* See [Advanced Tweaking](https://github.com/anothermartz/Easy-Wav2Lip/blob/v8/README.md#advanced-tweaking) below for the explanation of the settings not already explained in config.ini
+* See [Advanced Tweaking](https://github.com/anothermartz/Easy-Wav2Lip/blob/v8.2/README.md#advanced-tweaking) below for the explanation of the settings not already explained in config.ini
 
 # Credits:
 * [The Original Wav2Lip](https://github.com/Rudrabha/Wav2Lip) of course.
