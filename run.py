@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+import argparse
 from easy_functions import (format_time,
                             get_input_length,
                             get_video_details,
@@ -14,12 +15,28 @@ from IPython.display import Audio, Image, clear_output, display
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 import configparser
 
+parser = argparse.ArgumentParser(description='Easy-Wav2Lip main run file')
+
+parser.add_argument('-video_file', type=str, 
+                    help='Input video file path', required=False, default=False)
+parser.add_argument('-vocal_file', type=str, 
+                    help='Input audio file path', required=False, default=False)
+parser.add_argument('-output_file', type=str, 
+                    help='Output video file path', required=False, default=False)
+args = parser.parse_args()
+
 # retrieve variables from config.ini
 config = configparser.ConfigParser()
 config.read('config.ini')
+if args.video_file:
+    video_file = args.video_file
+else:
+    video_file = config['OPTIONS']['video_file']
 
-video_file = config['OPTIONS']['video_file']
-vocal_file = config['OPTIONS']['vocal_file']
+if args.vocal_file:
+    vocal_file = args.vocal_file
+else:
+    vocal_file = config['OPTIONS']['vocal_file']
 quality = config['OPTIONS']['quality']
 output_height = config['OPTIONS']['output_height']
 wav2lip_version = config['OPTIONS']['wav2lip_version']
@@ -192,9 +209,12 @@ while True:
   else:
       output_filename = filenamenonumber + str(filenumber)
 
-  # construct output_video
-  output_video = os.path.join(folder, output_filename + output_suffix + '.mp4')
-  output_videofile = os.path.basename(output_video)
+  if args.output_file:
+    output_video = args.output_file
+  else:
+    # construct output_video
+    output_video = os.path.join(folder, output_filename + output_suffix + '.mp4')
+    output_videofile = os.path.basename(output_video)
 
   # remove last outputs
   if os.path.exists('temp'):
