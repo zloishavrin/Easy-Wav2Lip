@@ -51,6 +51,7 @@ Easy-Wav2Lip fixes visual bugs on the lips:
 3. Run it and follow the instructions.
 
 Make sure your Nvidia drivers are up to date or you may not have Cuda 12.
+Also I think Python 3.10.x is needed for certain dependencies, I have only tested on 3.10.11.
 
 [Easy-Wav2Lip.bat](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/v8.2/Easy-Wav2Lip.bat) will automatically check for and install the required software, download and install Easy-Wav2Lip, then run it in a loop of configuration and processing until you close it. It will also check for updates to Easy-Wav2Lip.
 
@@ -58,7 +59,7 @@ _If anyone is able to convert Easy-Wav2Lip.bat to work on linux, it will very ap
 
 ### For other configurations (untested!) or just to manually install:
 1. Make sure the following are installed and can be accessed via your terminal:
-      * Python (I have only tested 3.10.11 - other versions may not work!)
+      * Python 3.10 (I have only tested 3.10.11 - other versions may not work!)
       * Git
       * ffmpeg, ffplay, ffprobe
       * Visual Studio Build Tools C++ module
