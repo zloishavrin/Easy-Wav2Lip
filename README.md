@@ -2,7 +2,7 @@
 1. [Introduction](https://github.com/anothermartz/Easy-Wav2Lip?tab=readme-ov-file#easy-wav2lip-improves-wav2lip-video-lipsyncing-making-it)
 2. [Google Colab version (free cloud computing in-browser)](https://github.com/anothermartz/Easy-Wav2Lip?tab=readme-ov-file#google-colab)
 3. [Local Installation](https://github.com/anothermartz/Easy-Wav2Lip?tab=readme-ov-file#local-installation)
-4. [Troubleshooting](https://github.com/anothermartz/Easy-Wav2Lip?tab=readme-ov-file#troubleshooting)
+4. [Support](https://github.com/anothermartz/Easy-Wav2Lip?tab=readme-ov-file#support)
 5. [Best Practices](https://github.com/anothermartz/Easy-Wav2Lip?tab=readme-ov-file#best-practices)
 # Easy-Wav2Lip improves Wav2Lip video lipsyncing making it:
 
