@@ -28,7 +28,7 @@ def move_and_replace_file_to_basicsr(file_name):
     if basicsr_location:
         destination = os.path.join(basicsr_location, file_name)
         # Move and replace the file
-        shutil.move(file_name, destination)
+        shutil.copyfile(file_name, destination)
         print(f'File replaced at {destination}')
     else:
         print('Could not find basicsr location.')
