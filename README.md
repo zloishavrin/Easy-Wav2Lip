@@ -128,15 +128,22 @@ MacOS support may be coming soon.
 * Thanks to [JustinJohn](https://github.com/justinjohn0306) for making the [Wav2Lip_simplified](https://colab.research.google.com/github/justinjohn0306/Wav2Lip/blob/master/Wav2Lip_simplified_v5.ipynb) colabs which inspired me to make my own, even simpler version.
 
 ## Support
-If you're having issues running this, please look through the [issues tab](https://github.com/anothermartz/Easy-Wav2Lip/issues) to see if someone has written about it. If not, make a new thread but make sure you include the following:
+If you're having issues running this, please look through the [issues tab](https://github.com/anothermartz/Easy-Wav2Lip/issues) to see if someone has written about it. If not, make a new thread but make sure you include the following:<br>
+ <br> **If colab:**
+ - Easy-Wav2Lip colab version number
+ - Info about the files used.
+   
+ <br> **If local install:**
+ - EasyWav2Lip.bat or manual install
+ - Operating system (windows 11, linux etc.)
+ - GPU model
+ - GPU driver version
+ - Python version
+ - Info about the files used and if other files work
 
-Operating system (windows 11, linux etc.)
-GPU
-GPU driver
-Python version
-Easy-Wav2Lip version and type (colab or local install, Easy-Wav2Lip.bat or manual)
+Without this info, I'll just ask for it anyway and so a response about the issue itself will take longer.
 
-Chances are that if any of those are different from [Local Installation](https://github.com/anothermartz/Easy-Wav2Lip?tab=readme-ov-file#local-installation) then that's the reason it's not working and you may just have to use the colab version if not already.
+Chances are that if any of those are different from [the requirements](https://github.com/anothermartz/Easy-Wav2Lip?tab=readme-ov-file#local-installation) then that's the reason it's not working and you may just have to use the colab version if not already.
 
 For general chit chat about this and any other lipsync talk, I'll be in this discord:<br>
 Invite link: https://discord.gg/FNZR9ETwKY<br>
