@@ -27,7 +27,6 @@ args = parser.parse_args()
 
 # retrieve variables from config.ini
 config = configparser.ConfigParser()
-tings_in_suffix = config.getboolean("OTHER", "include_settings_in_suffix")
 
 config.read('config.ini')
 if args.video_file:
