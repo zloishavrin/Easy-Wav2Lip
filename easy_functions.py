@@ -12,7 +12,7 @@ from urllib.parse import urlparse
 from torch.hub import download_url_to_file, get_dir
 from IPython.display import HTML, display
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
+device = 'cuda' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu'
 
 
 def get_video_details(filename):
@@ -79,7 +79,7 @@ def format_time(seconds):
 
 
 def _load(checkpoint_path):
-    if device == "cuda":
+    if device != "cpu":
         checkpoint = torch.load(checkpoint_path)
     else:
         checkpoint = torch.load(
