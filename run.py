@@ -1,13 +1,12 @@
 import os
 import sys
 import re
-from easy_functions import (
-    format_time,
-    get_input_length,
-    get_video_details,
-    show_video,
-    g_colab,
-)
+import argparse
+from easy_functions import (format_time,
+                            get_input_length,
+                            get_video_details,
+                            show_video,
+                            g_colab)
 import contextlib
 import shutil
 import subprocess
@@ -16,28 +15,47 @@ from IPython.display import Audio, Image, clear_output, display
 from moviepy.video.io.ffmpeg_tools import ffmpeg_extract_subclip
 import configparser
 
+parser = argparse.ArgumentParser(description='Easy-Wav2Lip main run file')
+
+parser.add_argument('-video_file', type=str, 
+                    help='Input video file path', required=False, default=False)
+parser.add_argument('-vocal_file', type=str, 
+                    help='Input audio file path', required=False, default=False)
+parser.add_argument('-output_file', type=str, 
+                    help='Output video file path', required=False, default=False)
+args = parser.parse_args()
+
 # retrieve variables from config.ini
 config = configparser.ConfigParser()
-config.read("config.ini")
+tings_in_suffix = config.getboolean("OTHER", "include_settings_in_suffix")
 
-video_file = config["OPTIONS"]["video_file"]
-vocal_file = config["OPTIONS"]["vocal_file"]
-quality = config["OPTIONS"]["quality"]
-output_height = config["OPTIONS"]["output_height"]
-wav2lip_version = config["OPTIONS"]["wav2lip_version"]
-use_previous_tracking_data = config["OPTIONS"]["use_previous_tracking_data"]
-nosmooth = config.getboolean("OPTIONS", "nosmooth")
-U = config.getint("PADDING", "U")
-D = config.getint("PADDING", "D")
-L = config.getint("PADDING", "L")
-R = config.getint("PADDING", "R")
-size = config.getfloat("MASK", "size")
-feathering = config.getint("MASK", "feathering")
-mouth_tracking = config.getboolean("MASK", "mouth_tracking")
-debug_mask = config.getboolean("MASK", "debug_mask")
-batch_process = config.getboolean("OTHER", "batch_process")
-output_suffix = config["OTHER"]["output_suffix"]
-include_settings_in_suffix = config.getboolean("OTHER", "include_settings_in_suffix")
+config.read('config.ini')
+if args.video_file:
+    video_file = args.video_file
+else:
+    video_file = config['OPTIONS']['video_file']
+
+if args.vocal_file:
+    vocal_file = args.vocal_file
+else:
+    vocal_file = config['OPTIONS']['vocal_file']
+quality = config['OPTIONS']['quality']
+output_height = config['OPTIONS']['output_height']
+wav2lip_version = config['OPTIONS']['wav2lip_version']
+use_previous_tracking_data = config['OPTIONS']['use_previous_tracking_data']
+nosmooth = config.getboolean('OPTIONS', 'nosmooth')
+U = config.getint('PADDING', 'U')
+D = config.getint('PADDING', 'D')
+L = config.getint('PADDING', 'L')
+R = config.getint('PADDING', 'R')
+size = config.getfloat('MASK', 'size')
+feathering = config.getint('MASK', 'feathering')
+mouth_tracking = config.getboolean('MASK', 'mouth_tracking')
+debug_mask = config.getboolean('MASK', 'debug_mask')
+batch_process = config.getboolean('OTHER', 'batch_process')
+output_suffix = config['OTHER']['output_suffix']
+include_settings_in_suffix = config.getboolean('OTHER', 'include_settings_in_suffix')
+
 if g_colab():
     preview_input = config.getboolean("OTHER", "preview_input")
 else:
@@ -181,6 +199,7 @@ last_input_audio = None
 
 # --------------------------Batch processing loop-------------------------------!
 while True:
+
     # construct input_video
     input_video = os.path.join(folder, filenamenonumber + str(filenumber) + file_type)
     input_videofile = os.path.basename(input_video)

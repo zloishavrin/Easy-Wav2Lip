@@ -1,10 +1,46 @@
-version = "v8.1"
+
+version = 'v8.2'
+
 import os
 import re
 import argparse
 import shutil
+import subprocess
 from IPython.display import clear_output
-from easy_functions import format_time, load_file_from_url, load_model, load_predictor
+
+from easy_functions import (format_time,
+                            load_file_from_url,
+                            load_model,
+                            load_predictor)
+                            # Get the location of the basicsr package
+import os
+import shutil
+import subprocess
+
+# Get the location of the basicsr package
+def get_basicsr_location():
+    result = subprocess.run(['pip', 'show', 'basicsr'], capture_output=True, text=True)
+    for line in result.stdout.split('\n'):
+        if 'Location: ' in line:
+            return line.split('Location: ')[1]
+    return None
+
+# Move and replace a file to the basicsr location
+def move_and_replace_file_to_basicsr(file_name):
+    basicsr_location = get_basicsr_location()
+    if basicsr_location:
+        destination = os.path.join(basicsr_location, file_name)
+        # Move and replace the file
+        shutil.copyfile(file_name, destination)
+        print(f'File replaced at {destination}')
+    else:
+        print('Could not find basicsr location.')
+
+# Example usage
+file_to_replace = 'degradations.py'  # Replace with your file name
+move_and_replace_file_to_basicsr(file_to_replace)
+
+
 from enhance import load_sr
 
 parser = argparse.ArgumentParser(description="Install Easy-Wav2Lip")
