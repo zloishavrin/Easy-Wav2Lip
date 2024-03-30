@@ -60,7 +60,7 @@ from easy_functions import load_model
 
 print("\rimports loaded!     ")
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
+device = 'cuda' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu'
 gpu_id = 0 if torch.cuda.is_available() else -1
 parser = argparse.ArgumentParser(
     description="Inference code to lip-sync videos in the wild using Wav2Lip models"
@@ -655,11 +655,9 @@ def datagen(frames, mels):
 
 
 mel_step_size = 16
-device = "cuda" if torch.cuda.is_available() else "cpu"
-
 
 def _load(checkpoint_path):
-    if device == "cuda":
+    if device != "cpu":
         checkpoint = torch.load(checkpoint_path)
     else:
         checkpoint = torch.load(
