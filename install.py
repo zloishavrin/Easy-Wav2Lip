@@ -1,5 +1,4 @@
-
-version = 'v8.2'
+version = 'macOSTest'
 
 import os
 import re
