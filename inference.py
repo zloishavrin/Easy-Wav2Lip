@@ -778,7 +778,7 @@ def main():
 
             print("Starting...")
             frame_h, frame_w = full_frames[0].shape[:-1]
-            fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # Be sure to use lower case
+            fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # Use "libx264" instead of "h264"
             out = cv2.VideoWriter("temp/result.mp4", fourcc, fps, (frame_w, frame_h))
 
         img_batch = torch.FloatTensor(np.transpose(img_batch, (0, 3, 1, 2))).to(device)
@@ -833,21 +833,19 @@ def main():
     if str(args.preview_settings) == "False":
         print("converting to final video")
 
-        subprocess.check_call(
-            [
-                "ffmpeg",
-                "-y",
-                "-loglevel",
-                "error",
-                "-i",
-                "temp/result.mp4",
-                "-i",
-                args.audio,
-                "-c:v",
-                "libx264",
-                args.outfile,
-            ]
-        )
+        subprocess.check_call([
+            "ffmpeg",
+            "-y",
+            "-loglevel",
+            "error",
+            "-i",
+            "temp/result.mp4",
+            "-i",
+            args.audio,
+            "-c:v",
+            "libx264",
+            args.outfile
+        ])
 
 
 model = detector = detector_model = None
