@@ -350,7 +350,7 @@ while True:
     # execute Wav2Lip & upscaler
 
     cmd = [
-        "python",
+        sys.executable,
         "inference.py",
         "--face",
         temp_input_video,
