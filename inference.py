@@ -844,7 +844,7 @@ def main():
                 "-i",
                 args.audio,
                 "-c:v",
-                "mp4v",
+                "libx264",
                 args.outfile,
             ]
         )
