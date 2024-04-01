@@ -331,13 +331,12 @@ while True:
                     temp_input_video, 0, audio_length, targetname=trimmed_video_path
                 )
         temp_input_video = trimmed_video_path
-
     # check if face detection has already happened on this clip
     last_detected_face = os.path.join(working_directory, "last_detected_face.pkl")
     if os.path.isfile("last_file.txt"):
         with open("last_file.txt", "r") as file:
             last_file = file.readline()
-        if last_file != temp_input_video or use_previous_tracking_data == False:
+        if last_file != temp_input_video or use_previous_tracking_data == "False":
             if os.path.isfile(last_detected_face):
                 os.remove(last_detected_face)
 
