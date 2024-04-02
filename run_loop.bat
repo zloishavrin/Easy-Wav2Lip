@@ -1,6 +1,5 @@
 @echo off
 :run_loop
-echo opening config.ini - customize accordingly then save and close it to continue!
 call GUI.py
 ::start /wait notepad.exe config.ini
 
