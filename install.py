@@ -15,6 +15,10 @@ from easy_functions import (format_time,
 import os
 import shutil
 import subprocess
+import warnings
+
+warnings.filterwarnings(
+    "ignore", category=UserWarning, module="torchvision.transforms.functional_tensor"
 
 # Get the location of the basicsr package
 def get_basicsr_location():
