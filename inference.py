@@ -229,7 +229,7 @@ parser.add_argument(
 parser.add_argument(
     "--quality",
     type=str,
-    help="Choose between Fast, Improved, Enhanced and Experimental",
+    help="Choose between Fast, Improved and Enhanced",
     default="Fast",
 )
 
@@ -241,126 +241,6 @@ with open(os.path.join("checkpoints", "mouth_detector.pkl"), "rb") as f:
 
 # creating variables to prevent failing when a face isn't detected
 kernel = last_mask = x = y = w = h = None
-
-
-def Experimental(img, original_img, run_params):
-    global kernel, last_mask, x, y, w, h  # Add last_mask to global variables
-
-    # Convert color space from BGR to RGB if necessary
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    original_img = cv2.cvtColor(original_img, cv2.COLOR_BGR2RGB)
-
-    if str(args.debug_mask) == "True":
-        original_img = cv2.cvtColor(original_img, cv2.COLOR_RGB2GRAY)
-        original_img = cv2.cvtColor(original_img, cv2.COLOR_GRAY2RGB)
-
-    # Detect face
-    faces = mouth_detector(img)
-    if len(faces) == 0:
-        if last_mask is not None:
-            last_mask = cv2.resize(last_mask, (img.shape[1], img.shape[0]))
-            mask = last_mask  # use the last successful mask
-        else:
-            cv2.cvtColor(img, cv2.COLOR_BGR2RGB, img)
-            return img, None
-    else:
-        face = faces[0]
-        shape = predictor(img, face)
-
-        # Get points for mouth
-        mouth_points = np.array(
-            [[shape.part(i).x, shape.part(i).y] for i in range(48, 68)]
-        )
-
-        # Calculate bounding box dimensions
-        x, y, w, h = cv2.boundingRect(mouth_points)
-
-        # Set kernel size as a fraction of bounding box size
-        kernel_size = int(max(w, h) * args.mask_dilation)
-        upscale_kernel_size = int(max(w, h) * max(args.mask_dilation, 2.5))
-
-        # Create kernels
-        kernel = np.ones((kernel_size, kernel_size), np.uint8)
-        upscale_kernel = np.ones((upscale_kernel_size, upscale_kernel_size), np.uint8)
-
-        # Create binary mask for mouth
-        mask = np.zeros(img.shape[:2], dtype=np.uint8)
-        cv2.fillConvexPoly(mask, mouth_points, 255)
-
-        last_mask = mask  # Update last_mask with the new mask
-
-    # Dilate the mask for upscaling
-    upscale_dilated_mask = cv2.dilate(mask, upscale_kernel)
-    dilated_mask = cv2.dilate(mask, kernel)
-
-    # Find contours in the dilated mask
-    contours, _ = cv2.findContours(
-        upscale_dilated_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-    )
-
-    # Find bounding box coordinates for each contour
-    for contour in contours:
-        x_dilated, y_dilated, w_dilated, h_dilated = cv2.boundingRect(contour)
-
-        # Crop the image to the bounding box of the dilated mask
-        cropped_img = img[
-            y_dilated : y_dilated + h_dilated, x_dilated : x_dilated + w_dilated
-        ]
-
-        # Save the cropped image here
-        # cv2.imwrite('temp/cp.jpg', cropped_img)
-
-        # Upscale the cropped image
-        upscaled_img = upscale(cropped_img, run_params)
-
-        # cv2.imwrite('temp/ucp.jpg', upscaled_img)
-
-        if str(args.debug_mask) == "True":
-            img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-            img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
-
-        # Paste the upscaled image back onto the original image
-        img[
-            y_dilated : y_dilated + h_dilated, x_dilated : x_dilated + w_dilated
-        ] = upscaled_img
-
-    # Calculate distance transform of dilated mask
-    dist_transform = cv2.distanceTransform(dilated_mask, cv2.DIST_L2, 5)
-
-    # Normalize distance transform
-    cv2.normalize(dist_transform, dist_transform, 0, 255, cv2.NORM_MINMAX)
-
-    # Convert normalized distance transform to binary mask and convert it to uint8
-    _, masked_diff = cv2.threshold(dist_transform, 50, 255, cv2.THRESH_BINARY)
-    masked_diff = masked_diff.astype(np.uint8)
-
-    if not args.mask_feathering == 0:
-        blur = args.mask_feathering
-        # Set blur size as a fraction of bounding box size
-        blur = int(max(w, h) * blur)  # 10% of bounding box size
-        if blur % 2 == 0:  # Ensure blur size is odd
-            blur += 1
-        masked_diff = cv2.GaussianBlur(masked_diff, (blur, blur), 0)
-
-    # Convert numpy arrays to PIL Images
-    input1 = Image.fromarray(img)
-    input2 = Image.fromarray(original_img)
-
-    # Convert mask to single channel where pixel values are from the alpha channel of the current mask
-    mask = Image.fromarray(masked_diff)
-
-    # Ensure images are the same size
-    assert input1.size == input2.size == mask.size
-
-    # Paste input1 onto input2 using the mask
-    input2.paste(input1, (0, 0), mask)
-
-    # Convert the final PIL Image back to a numpy array
-    input2 = np.array(input2)
-
-    cv2.cvtColor(input2, cv2.COLOR_BGR2RGB, input2)
-
-    return input2, mask
 
 
 def create_tracked_mask(img, original_img):
@@ -763,7 +643,7 @@ def main():
         tqdm(
             gen,
             total=int(np.ceil(float(len(mel_chunks)) / batch_size)),
-            desc="Processing Wav2Lip",
+            desc="Processing Wav2Lip - press Q to stop",
             ncols=100,
         )
     ):
@@ -795,11 +675,11 @@ def main():
             y1, y2, x1, x2 = c
 
             if (
-                str(args.debug_mask) == "True" and args.quality != "Experimental"
+                str(args.debug_mask) == "True"
             ):  # makes the background black & white so you can see the mask better
                 f = cv2.cvtColor(f, cv2.COLOR_BGR2GRAY)
                 f = cv2.cvtColor(f, cv2.COLOR_GRAY2BGR)
-            of = f
+
             p = cv2.resize(p.astype(np.uint8), (x2 - x1, y2 - y1))
             cf = f[y1:y2, x1:x2]
 
@@ -815,18 +695,20 @@ def main():
                         p, last_mask = create_mask(p, cf)
 
             f[y1:y2, x1:x2] = p
-            # cv2.imwrite('temp/p.jpg', f)
-
-            if args.quality == "Experimental":
-                last_mask = None
-                for i in range(len(frames)):
-                    f, last_mask = Experimental(f, of, run_params)
+    
+    # Display the modified frame
+            cv2.imshow("preview", f)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                exit()  # Exit the loop when 'Q' is pressed
 
             if str(args.preview_settings) == "True":
                 cv2.imwrite("temp/preview.jpg", f)
 
             else:
                 out.write(f)
+
+    # Close the window(s) when done
+    cv2.destroyAllWindows()
 
     out.release()
 
