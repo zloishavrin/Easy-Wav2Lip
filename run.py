@@ -111,6 +111,7 @@ if output_suffix == "" and not include_settings_in_suffix:
     )
 
 frame_to_preview = max(frame_to_preview - 1, 0)
+print(frame_to_preview)
 
 if include_settings_in_suffix:
     if wav2lip_version == "Wav2Lip_GAN":
@@ -401,12 +402,9 @@ while True:
 
         else:
             print(f"Processing failed! :( see line above 👆")
-            if not g_colab:
-                print(
-                    "Maybe this just isn't compatible with your system and you might be better off using the colab:"
-                )
-                print("https://github.com/anothermartz/Easy-Wav2Lip#google-colab")
-            sys.exit("Processing failed")
+            print("Consider searching the issues tab on the github:")
+            print("https://github.com/anothermartz/Easy-Wav2Lip/issues")
+            exit()
 
     # rename temp file and move to correct directory
     if os.path.isfile(temp_output):
@@ -427,16 +425,13 @@ while True:
 
     else:
         print(f"Processing failed! :( see line above 👆")
-        if not g_colab:
-            print(
-                "Maybe this just isn't compatible with your system and you might be better off using the colab:"
-            )
-            print("https://github.com/anothermartz/Easy-Wav2Lip#google-colab")
+        print("Consider searching the issues tab on the github:")
+        print("https://github.com/anothermartz/Easy-Wav2Lip/issues")
         process_failed = True
 
     if batch_process == False:
         if process_failed:
-            sys.exit("Processing failed")
+            exit()
         else:
             break
 
