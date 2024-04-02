@@ -1,4 +1,4 @@
-version = 'macOSTest'
+version = 'v8.3'
 
 import os
 import re
@@ -41,14 +41,6 @@ move_and_replace_file_to_basicsr(file_to_replace)
 
 
 from enhance import load_sr
-
-parser = argparse.ArgumentParser(description="Install Easy-Wav2Lip")
-
-parser.add_argument(
-    "--ver", type=str, default=version, help="Which branch to install", required=False
-)
-
-args = parser.parse_args()
 
 working_directory = os.getcwd()
 
@@ -94,7 +86,7 @@ load_predictor()
 
 # write a file to signify setup is done
 with open("installed.txt", "w") as f:
-    f.write(args.ver)
+    f.write(version)
 print("Installation complete!")
 print(
     "If you just updated from v8 - make sure to download the updated Easy-Wav2Lip.bat too!"
