@@ -3,6 +3,18 @@ from tkinter import filedialog, ttk
 import configparser
 import os
 
+try:
+    with open('installed.txt', 'r') as file:
+        version = file.read()
+except FileNotFoundError:
+    print("Easy-Wav2Lip does not appear to have installed correctly.")
+    print("Please try to install it again.")
+    print("https://github.com/anothermartz/Easy-Wav2Lip/issues")
+    input()
+    exit()
+
+print("opening GUI")
+
 runfile = 'run.txt'
 if os.path.exists(runfile):
     os.remove(runfile)
@@ -32,6 +44,18 @@ def open_vocal_file():
     file_path = filedialog.askopenfilename(title="Select a vocal file", filetypes=[("All files", "*.*")])
     if file_path:
         vocal_file_var.set(file_path)
+
+# feathering
+def validate_frame_preview(P):
+    if P == "":
+        return True  # Allow empty input
+    try:
+        num = float(P)
+        if (num.is_integer()):
+            return True
+    except ValueError:
+        pass
+    return False
 
 def start_easy_wav2lip():
     # Start Easy-Wav2Lip processing
@@ -63,7 +87,7 @@ def start_easy_wav2lip():
     # Add your logic here
 
 root = tk.Tk()
-root.title("Easy-Wav2Lip Configuration")
+root.title("Easy-Wav2Lip GUI")
 root.geometry("800x700")
 root.configure(bg="lightblue")
 
@@ -71,11 +95,11 @@ root.configure(bg="lightblue")
 config = read_config()
 
 row=0
-tk.Label(root, text="", bg="lightblue").grid(row=row, column=0, sticky="w")
+tk.Label(root, text=version, bg="lightblue").grid(row=row, column=0, sticky="w")
 # Create a label for video file
 row+=1
 video_label = tk.Label(root, text="Video File Path:", bg="lightblue")
-video_label.grid(row=row, column=0, sticky="w")
+video_label.grid(row=row, column=0, sticky="e")
 
 # Entry widget for video file path
 video_file_var = tk.StringVar()
@@ -84,7 +108,7 @@ video_entry.grid(row=row, column=1, sticky="w")
 
 # Create a button to open the file dialog
 select_button = tk.Button(root, text="...", command=open_video_file)
-select_button.grid(row=row, column=2, sticky="w", padx=10)
+select_button.grid(row=row, column=1, sticky="w", padx=490)
 
 # Set the default value based on the existing config
 video_file_var.set(config["OPTIONS"].get("video_file", ""))
@@ -97,7 +121,7 @@ row+=1
 
 # Create a label for the input box
 vocal_file_label = tk.Label(root, text="Vocal File Path:", bg="lightblue")
-vocal_file_label.grid(row=row, column=0, sticky="w", columnspan=2)
+vocal_file_label.grid(row=row, column=0, sticky="e")
 
 # Create an input box for the vocal file path
 vocal_file_var = tk.StringVar()
@@ -106,7 +130,7 @@ vocal_file_entry.grid(row=row, column=1, sticky="w")
 
 # Create a button to open the file dialog
 select_button = tk.Button(root, text="...", command=open_vocal_file)
-select_button.grid(row=row, column=2, sticky="w", padx=10)
+select_button.grid(row=row, column=1, sticky="w", padx=490)
 
 # Set the initial value from the 'config' dictionary (if available)
 vocal_file_var.set(config["OPTIONS"].get("vocal_file", ""))
@@ -117,7 +141,7 @@ tk.Label(root, text="", bg="lightblue").grid(row=row, column=0, sticky="w")
 # Dropdown box for quality options
 row+=1
 quality_label = tk.Label(root, text="Select Quality:", bg="lightblue")
-quality_label.grid(row=row, column=0, sticky="w")
+quality_label.grid(row=row, column=0, sticky="e")
 quality_options = ["Fast", "Improved", "Enhanced"]
 quality_var = tk.StringVar()
 quality_var.set(config["OPTIONS"].get("quality", "Improved"))
@@ -130,7 +154,7 @@ tk.Label(root, text="", bg="lightblue").grid(row=row, column=0, sticky="w")
 # Output height
 row+=1
 output_height_label = tk.Label(root, text="Output height:", bg="lightblue")
-output_height_label.grid(row=row, column=0, sticky="w")  # Place on the left (west)
+output_height_label.grid(row=row, column=0, sticky="e")
 output_height_options = ["half resolution", "full resolution"]
 output_height_combobox = ttk.Combobox(root, values=output_height_options)
 output_height_combobox.set(config["OPTIONS"].get("output_height", "full resolution"))  # Set default value
@@ -142,7 +166,7 @@ tk.Label(root, text="", bg="lightblue").grid(row=row, column=0, sticky="w")
 # Dropdown box for wav2lip version options
 row+=1
 wav2lip_version_label = tk.Label(root, text="Select Wav2Lip version:", bg="lightblue")
-wav2lip_version_label.grid(row=row, column=0, sticky="w")
+wav2lip_version_label.grid(row=row, column=0, sticky="e")
 wav2lip_version_options = ["Wav2Lip", "Wav2Lip_GAN"]
 wav2lip_version_var = tk.StringVar()
 wav2lip_version_var.set(config["OPTIONS"].get("wav2lip_version", "Wav2Lip"))
@@ -151,27 +175,70 @@ wav2lip_version_dropdown.grid(row=row, column=1, sticky="w")
 
 row+=1
 tk.Label(root, text="", bg="lightblue").grid(row=row, column=0, sticky="w")
+# output_suffix
+row+=1
+output_suffix_label = tk.Label(root, text="Output File Suffix:", bg="lightblue")
+output_suffix_label.grid(row=row, column=0, sticky="e")
+output_suffix_var = tk.StringVar()
+output_suffix_var.set(config["OTHER"].get("output_suffix", "_Easy-Wav2Lip"))
+output_suffix_entry = output_suffix_entry = tk.Entry(root, textvariable=output_suffix_var, width=20)
+output_suffix_entry.grid(row=row, column=1, sticky="w")
+
+include_settings_in_suffix_var = tk.BooleanVar()
+include_settings_in_suffix_var.set(config["OTHER"].get("include_settings_in_suffix", True))  # Set default value
+include_settings_in_suffix_checkbox = tk.Checkbutton(root, text="Include Settings in Suffix", variable=include_settings_in_suffix_var, bg="lightblue")
+include_settings_in_suffix_checkbox.grid(row=row, column=1, sticky="w", padx=130)
+
+# batch_process
+row+=1
+tk.Label(root, text="", bg="lightblue").grid(row=row, column=0, sticky="w")
+row+=1
+batch_process_label = tk.Label(root, text="Batch Process:", bg="lightblue")
+batch_process_label.grid(row=row, column=0, sticky="e")
+batch_process_var = tk.BooleanVar()
+batch_process_var.set(config["OTHER"].get("batch_process", True))  # Set default value
+batch_process_checkbox = tk.Checkbutton(root, text="", variable=batch_process_var, bg="lightblue")
+batch_process_checkbox.grid(row=row, column=1, sticky="w")
+
+row+=1
+tk.Label(root, text="", bg="lightblue").grid(row=row, column=0, sticky="w")
+
+# Button to start Easy-Wav2Lip
+row+=1
+start_button = tk.Button(root, text="Start Easy-Wav2Lip", command=start_easy_wav2lip, bg="#5af269", font=("Arial", 16))
+start_button.grid(row=row, column=0, sticky="w", padx=290, columnspan=2)
+
+row+=1
+tk.Label(root, text="", bg="lightblue").grid(row=row, column=0, sticky="w")
+tk.Label(root, text="", bg="lightblue").grid(row=row, column=0, sticky="w")
 
 row+=1
 tk.Label(root, text="Advanced Tweaking:", bg="lightblue", font=("Arial", 16)).grid(row=row, column=0, sticky="w")
-
+row+=1
 # Create a label with a custom cursor
-link = tk.Label(root, text="Click here to see the readme for info!", bg="lightblue", fg="blue", font=("Arial", 12), cursor="hand2")
-link.grid(row=row, column=0, sticky="w", padx=200, columnspan=2)
+link = tk.Label(root, text="(Click here to see readme)", bg="lightblue", fg="blue", font=("Arial", 10), cursor="hand2")
+link.grid(row=row, column=0)
 
 # Bind the click event to the label
 link.bind("<Button-1>", open_github_link)
 
 # Checkbox for nosmooth option
-row+=1
+
 nosmooth_var = tk.BooleanVar()
 nosmooth_var.set(config["OPTIONS"].get("nosmooth", True))  # Set default value
-nosmooth_checkbox = tk.Checkbutton(root, text="nosmooth", variable=nosmooth_var, bg="lightblue")
+nosmooth_checkbox = tk.Checkbutton(root, text="nosmooth - unticking will smooth face detection between 5 frames", variable=nosmooth_var, bg="lightblue")
 nosmooth_checkbox.grid(row=row, column=1, sticky="w")
+
+# Checkbox for use_previous_tracking_data option
+row+=1
+use_previous_tracking_data_var = tk.BooleanVar()
+use_previous_tracking_data_var.set(config["OPTIONS"].get("use_previous_tracking_data", True))  # Set default value
+use_previous_tracking_data_checkbox = tk.Checkbutton(root, text="Keep previous face tracking data if using same video", variable=use_previous_tracking_data_var, bg="lightblue")
+use_previous_tracking_data_checkbox.grid(row=row, column=1, sticky="w")
 
 # padding
 row+=1
-tk.Label(root, text="Padding:", bg="lightblue").grid(row=row, column=1, sticky="sw", pady=10)
+tk.Label(root, text="Padding:", bg="lightblue", font=("Arial", 12)).grid(row=row, column=1, sticky="sw", pady=10)
 row+=1
 tk.Label(root, text="(Up, Down, Left, Right)", bg="lightblue").grid(row=row, column=1, rowspan=4, sticky="w", padx=100)
 padding_vars = {}
@@ -222,11 +289,13 @@ def validate_custom_number(P):
     return False
 
 row+=1
-size_label = tk.Label(root, text="Mask size:", bg="lightblue")
+tk.Label(root, text="Mask settings:", bg="lightblue", font=("Arial", 12)).grid(row=row, column=1, sticky="sw", pady=10)
+row+=1
+size_label = tk.Label(root, text="Mask size:", bg="lightblue", padx=50)
 size_label.grid(row=row, column=1, sticky="w")
 size_var = tk.StringVar()
 size_entry = tk.Entry(root, textvariable=size_var, validate="key", width=3, validatecommand=(root.register(validate_custom_number), "%P"))
-size_entry.grid(row=row, column=1, sticky="w", padx=100)
+size_entry.grid(row=row, column=1, sticky="w", padx=120)
 size_var.set(config["MASK"].get("size", "2.5"))
 
 # feathering
@@ -242,91 +311,38 @@ def validate_feather(P):
     return False
     
 row+=1
-feathering_label = tk.Label(root, text="Feathering:", bg="lightblue")
+feathering_label = tk.Label(root, text="Feathering:", bg="lightblue", padx=50)
 feathering_label.grid(row=row, column=1, sticky="w")
 feathering_var = tk.StringVar()
 feathering_entry = tk.Entry(root, textvariable=feathering_var, validate="key", width=3, validatecommand=(root.register(validate_feather), "%P"))
-feathering_entry.grid(row=row, column=1, sticky="w", padx=100)
+feathering_entry.grid(row=row, column=1, sticky="w", padx=120)
 feathering_var.set(config["MASK"].get("feathering", "2.5"))
-
-# Checkbox for use_previous_tracking_data option
-row+=1
-use_previous_tracking_data_var = tk.BooleanVar()
-use_previous_tracking_data_var.set(config["OPTIONS"].get("use_previous_tracking_data", True))  # Set default value
-use_previous_tracking_data_checkbox = tk.Checkbutton(root, text="Keep previous face tracking data", variable=use_previous_tracking_data_var, bg="lightblue")
-use_previous_tracking_data_checkbox.grid(row=row, column=1, sticky="w")
 
 # mouth_tracking
 row+=1
 mouth_tracking_var = tk.BooleanVar()
 mouth_tracking_var.set(config["MASK"].get("mouth_tracking", True))  # Set default value
-mouth_tracking_checkbox = tk.Checkbutton(root, text="track mouth for mask on every frame", variable=mouth_tracking_var, bg="lightblue")
+mouth_tracking_checkbox = tk.Checkbutton(root, text="track mouth for mask on every frame", variable=mouth_tracking_var, bg="lightblue", padx=50)
 mouth_tracking_checkbox.grid(row=row, column=1, sticky="w")
 
 # debug_mask
 row+=1
 debug_mask_var = tk.BooleanVar()
 debug_mask_var.set(config["MASK"].get("debug_mask", True))  # Set default value
-debug_mask_checkbox = tk.Checkbutton(root, text="highlight mask for debugging", variable=debug_mask_var, bg="lightblue")
+debug_mask_checkbox = tk.Checkbutton(root, text="highlight mask for debugging", variable=debug_mask_var, bg="lightblue", padx=50)
 debug_mask_checkbox.grid(row=row, column=1, sticky="w")
-
-row+=1
-batch_process_var = tk.BooleanVar()
-batch_process_var.set(config["OTHER"].get("batch_process", True))  # Set default value
-batch_process_checkbox = tk.Checkbutton(root, text="batch_process", variable=batch_process_var, bg="lightblue")
-batch_process_checkbox.grid(row=row, column=1, sticky="w")
-
-row+=1
-output_suffix_label = tk.Label(root, text="output_suffix:", bg="lightblue")
-output_suffix_label.grid(row=row, column=1, sticky="w")
-output_suffix_var = tk.StringVar()
-output_suffix_entry = tk.Entry(root, textvariable=output_suffix_var, validate="key", width=30, validatecommand=(root.register(validate_feather), "%P"))
-output_suffix_entry.grid(row=row, column=1, sticky="w", padx=100)
-output_suffix_var.set(config["OTHER"].get("output_suffix", "_Easy-Wav2Lip"))
-
-row+=1
-include_settings_in_suffix_var = tk.BooleanVar()
-include_settings_in_suffix_var.set(config["OTHER"].get("include_settings_in_suffix", True))  # Set default value
-include_settings_in_suffix_checkbox = tk.Checkbutton(root, text="include_settings_in_suffix", variable=include_settings_in_suffix_var, bg="lightblue")
-include_settings_in_suffix_checkbox.grid(row=row, column=1, sticky="w")
 
 row+=1
 preview_settings_var = tk.BooleanVar()
 preview_settings_var.set(config["OTHER"].get("preview_settings", True))  # Set default value
-preview_settings_checkbox = tk.Checkbutton(root, text="preview_settings", variable=preview_settings_var, bg="lightblue")
+preview_settings_checkbox = tk.Checkbutton(root, text="Process one frame only - Frame to process:", variable=preview_settings_var, bg="lightblue")
 preview_settings_checkbox.grid(row=row, column=1, sticky="w")
-
-# feathering
-def validate_frame_preview(P):
-    if P == "":
-        return True  # Allow empty input
-    try:
-        num = float(P)
-        if (num.is_integer()):
-            return True
-    except ValueError:
-        pass
-    return False
     
-row+=1
-frame_to_preview_label = tk.Label(root, text="frame_to_preview:", bg="lightblue")
-frame_to_preview_label.grid(row=row, column=1, sticky="w")
+
 frame_to_preview_var = tk.StringVar()
 frame_to_preview_entry = tk.Entry(root, textvariable=frame_to_preview_var, validate="key", width=3, validatecommand=(root.register(validate_frame_preview), "%P"))
-frame_to_preview_entry.grid(row=row, column=1, sticky="w", padx=110)
-frame_to_preview_var.set(config["OTHER"].get("frame_to_preview", "150"))
-
-row+=1
-tk.Label(root, text="", bg="lightblue").grid(row=row, column=0, sticky="w")
-
-# Button to start Easy-Wav2Lip
-row+=1
-start_button = tk.Button(root, text="Start Easy-Wav2Lip", command=start_easy_wav2lip, bg="#5af269", font=("Arial", 16))
-start_button.grid(row=row, column=1, sticky="w")
-
-row+=1
-tk.Label(root, text="", bg="lightblue").grid(row=row, column=0, sticky="w")
-tk.Label(root, text="", bg="lightblue").grid(row=row, column=0, sticky="w")
+frame_to_preview_entry.grid(row=row, column=1, sticky="w", padx=255)
+frame_to_preview_var.set(config["OTHER"].get("frame_to_preview", "100"))
 
 # Increase spacing between all rows (uniformly)
 for row in range(row):
