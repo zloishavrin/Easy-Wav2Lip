@@ -10,6 +10,9 @@ from PIL import Image
 print("\rloading argparse    ", end="")
 import argparse
 
+print("\rloading configparser", end="")
+import configparser
+
 print("\rloading math        ", end="")
 import math
 
@@ -28,10 +31,7 @@ import cv2
 print("\rloading audio       ", end="")
 import audio
 
-print("\rloading Wav2Lip     ", end="")
-from models import Wav2Lip
-
-print("\rRloading RetinaFace ", end="")
+print("\rloading RetinaFace ", end="")
 from batch_face import RetinaFace
 
 print("\rloading re          ", end="")
@@ -56,12 +56,15 @@ print("\rloading load_sr     ", end="")
 from enhance import load_sr
 
 print("\rloading load_model  ", end="")
-from easy_functions import load_model
+from easy_functions import load_model, g_colab
 
 print("\rimports loaded!     ")
 
 device = 'cuda' if torch.cuda.is_available() else 'mps' if torch.backends.mps.is_available() else 'cpu'
 gpu_id = 0 if torch.cuda.is_available() else -1
+
+if device == 'cpu':
+    print('Warning: No GPU detected so inference will be done on the CPU which is VERY SLOW!')
 parser = argparse.ArgumentParser(
     description="Inference code to lip-sync videos in the wild using Wav2Lip models"
 )
@@ -242,6 +245,37 @@ with open(os.path.join("checkpoints", "mouth_detector.pkl"), "rb") as f:
 # creating variables to prevent failing when a face isn't detected
 kernel = last_mask = x = y = w = h = None
 
+# Load the config file
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+# Get the value of the "preview_window" variable
+preview_window = config.get('OPTIONS', 'preview_window')
+
+all_mouth_landmarks = []
+
+model = detector = detector_model = None
+
+def do_load(checkpoint_path):
+    global model, detector, detector_model
+    model = load_model(checkpoint_path)
+    detector = RetinaFace(
+        gpu_id=gpu_id, model_path="checkpoints/mobilenet.pth", network="mobilenet"
+    )
+    detector_model = detector.model
+
+def face_rect(images):
+    face_batch_size = 8
+    num_batches = math.ceil(len(images) / face_batch_size)
+    prev_ret = None
+    for i in range(num_batches):
+        batch = images[i * face_batch_size : (i + 1) * face_batch_size]
+        all_faces = detector(batch)  # return faces list of all images
+        for faces in all_faces:
+            if faces:
+                box, landmarks, score = faces[0]
+                prev_ret = tuple(map(int, box))
+            yield prev_ret
 
 def create_tracked_mask(img, original_img):
     global kernel, last_mask, x, y, w, h  # Add last_mask to global variables
@@ -331,7 +365,7 @@ def create_tracked_mask(img, original_img):
 
 
 def create_mask(img, original_img):
-    global kernel, last_mask, x, y, w, h  # Add last_mask to global variables
+    global kernel, last_mask, x, y, w, h # Add last_mask to global variables
 
     # Convert color space from BGR to RGB if necessary
     cv2.cvtColor(img, cv2.COLOR_BGR2RGB, img)
@@ -430,8 +464,7 @@ def get_smoothened_boxes(boxes, T):
             window = boxes[i : i + T]
         boxes[i] = np.mean(window, axis=0)
     return boxes
-
-
+            
 def face_detect(images, results_file="last_detected_face.pkl"):
     # If results file exists, load it and return
     if os.path.exists(results_file):
@@ -444,8 +477,7 @@ def face_detect(images, results_file="last_detected_face.pkl"):
     from tqdm import tqdm
 
     tqdm = partial(tqdm, position=0, leave=True)
-
-    for image, rect in tqdm(
+    for image, (rect) in tqdm(
         zip(images, face_rect(images)),
         total=len(images),
         desc="detecting face in every frame",
@@ -465,6 +497,7 @@ def face_detect(images, results_file="last_detected_face.pkl"):
         x2 = min(image.shape[1], rect[2] + padx2)
 
         results.append([x1, y1, x2, y2])
+
 
     boxes = np.array(results)
     if str(args.nosmooth) == "False":
@@ -658,7 +691,7 @@ def main():
 
             print("Starting...")
             frame_h, frame_w = full_frames[0].shape[:-1]
-            fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # Use "libx264" instead of "h264"
+            fourcc = cv2.VideoWriter_fourcc(*"mp4v")
             out = cv2.VideoWriter("temp/result.mp4", fourcc, fps, (frame_w, frame_h))
 
         img_batch = torch.FloatTensor(np.transpose(img_batch, (0, 3, 1, 2))).to(device)
@@ -688,21 +721,32 @@ def main():
 
             if args.quality in ["Enhanced", "Improved"]:
                 if str(args.mouth_tracking) == "True":
-                    for i in range(len(frames)):
-                        p, last_mask = create_tracked_mask(p, cf)
+                    p, last_mask = create_tracked_mask(p, cf)
                 else:
-                    for i in range(len(frames)):
-                        p, last_mask = create_mask(p, cf)
+                    p, last_mask = create_mask(p, cf)
 
             f[y1:y2, x1:x2] = p
-    
-    # Display the modified frame
-            cv2.imshow("preview", f)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                exit()  # Exit the loop when 'Q' is pressed
+
+            if g_colab:
+                # Display the frame
+                if preview_window == "Face":
+                    cv2.imshow("face preview", p)
+                elif preview_window == "Full":
+                    cv2.imshow("full preview", f)
+                elif preview_window == "Both":
+                    cv2.imshow("face preview", p)
+                    cv2.imshow("full preview", f)
+
+                key = cv2.waitKey(1) & 0xFF
+                if key == ord('q'):
+                    exit()  # Exit the loop when 'Q' is pressed
 
             if str(args.preview_settings) == "True":
                 cv2.imwrite("temp/preview.jpg", f)
+                if g_colab():
+                    cv2.imshow("preview", f)
+                    if cv2.waitKey(-1) & 0xFF == ord('q'):
+                        exit()  # Exit the loop when 'Q' is pressed
 
             else:
                 out.write(f)
@@ -728,33 +772,6 @@ def main():
             "libx264",
             args.outfile
         ])
-
-
-model = detector = detector_model = None
-
-
-def do_load(checkpoint_path):
-    global model, detector, detector_model
-    model = load_model(checkpoint_path)
-    detector = RetinaFace(
-        gpu_id=gpu_id, model_path="checkpoints/mobilenet.pth", network="mobilenet"
-    )
-    detector_model = detector.model
-
-
-def face_rect(images):
-    face_batch_size = 8
-    num_batches = math.ceil(len(images) / face_batch_size)
-    prev_ret = None
-    for i in range(num_batches):
-        batch = images[i * face_batch_size : (i + 1) * face_batch_size]
-        all_faces = detector(batch)  # return faces list of all images
-        for faces in all_faces:
-            if faces:
-                box, landmarks, score = faces[0]
-                prev_ret = tuple(map(int, box))
-            yield prev_ret
-
 
 if __name__ == "__main__":
     args = parser.parse_args()
