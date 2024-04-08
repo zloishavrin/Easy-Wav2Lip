@@ -51,8 +51,11 @@ Easy-Wav2Lip fixes visual bugs on the lips:
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8.2/Easy_Wav2Lip_v8.2.ipynb)
 
 ## Local Installation:
-Requiremebts:
+Requirements:
     Nvidia card that supports cuda 12.2
+    Or
+    MacOS device that supports mps (macOSTest branch only - please let me know if it works!)
+
 
 ### Automatic installation for Windows 64-bit and x86 processor:
 1. Download [Easy-Wav2Lip.bat](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/v8.2/Easy-Wav2Lip.bat)
@@ -66,54 +69,85 @@ This should handle the installation of all required components.
 1. Make sure the following are installed and can be accessed via your terminal:
       * Python 3.10 (I have only tested [3.10.11](https://www.python.org/ftp/python/3.10.11/) - other versions may not work!)
       * [Git](https://git-scm.com/)
-      * [ffmpeg, ffplay, ffprobe](https://github.com/BtbN/FFmpeg-Builds/releases)
-      * Windows only: [Visual Studio Build Tools C++ module](https://aka.ms/vs/17/release/vs_BuildTools.exe)
-      * Cuda (Just having the latest Nvidia drivers will do this, I have only tested 12.2)
+      * Windows & Linuz: Cuda (Just having the latest Nvidia drivers will do this, I have only tested 12.2)
+      * MacOS: Untested macOSTest branch avaialble, see instructions below
 
 2. Run the following in your terminal once you've navigated to the folder you want to install Easy-Wav2Lip:
 
-Windows install and run:
+### Windows installation:
+Sets up a venv, installs ffmpeg to it and then installs Easy-Wav2Lip:
+1. Open cmd and navigate to the folder you want to install EasyWav2Lip using cd 
+EG:
+`cd Documents`
+
+2. Copy and paste the following code into your cmd window:
+Note: 2 folders will be made in this location: Easy-Wav2Lip and Easy-Wav2Lip-venv (an isolated python install)
 ```
-py -3.10 -m venv EW2Lvenv
-EW2Lvenv\Scripts\activate
+py -3.10 -m venv Easy-Wav2Lip-venv
+Easy-Wav2Lip-venv\Scripts\activate
+python -m pip install --upgrade pip
+python -m pip install requests
+set url=https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip
+python -c "import requests; r = requests.get('%url%', stream=True); open('ffmpeg.zip', 'wb').write(r.content)"
+powershell -Command "Expand-Archive -Path .\\ffmpeg.zip -DestinationPath .\\"
+xcopy /e /i /y "ffmpeg-master-latest-win64-gpl\bin\*" .\Easy-Wav2Lip-venv\Scripts
+del ffmpeg.zip
+rmdir /s /q ffmpeg-master-latest-win64-gpl
 git clone https://github.com/anothermartz/Easy-Wav2Lip.git
 cd Easy-Wav2Lip
 pip install -r requirements.txt
 python install.py
+```
+Now to run Easy-Wav2Lip:<br>
+    3. Close and reopen cmd then cd to the same directory as in Step 1.<br>
+    4. Paste the following code:
+```
+Easy-Wav2Lip-venv\Scripts\activate
+cd Easy-Wav2Lip
 call run_loop.bat
 ```
-Windows run after previously installing:
-```
-EW2Lvenv\Scripts\activate
-call run_loop.bat
-```
+See [Usage](https://github.com/anothermartz/Easy-Wav2Lip?tab=readme-ov-file#usage) for further instructions.
 
-Linux install and run:
+### MacOS and Linux installation (untested):
+Sets up a venv, installs ffmpeg to it and then installs Easy-Wav2Lip:
+1. Open Terminal and navigate to the folder you want to insteall Easy0Wav2Kip using cd
+EG:
+`cd ~/Documents`
+
+2. Copy and paste the following code into your terminal window:
+Note: 2 folders will be made in this location: Easy-Wav2Lip and Easy-Wav2Lip-venv (an isolated python install)
 ```
-python3.10 -m venv EW2Lvenv
+python3.10 -m venv Easy-Wav2Lip-venv
+source EW2Lvenv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install requests
+for file in ffmpeg ffprobe ffplay; do
+    curl -O "https://evermeet.cx/ffmpeg/${file}-6.1.1.zip"
+    unzip "${file}-6.1.1.zip"
+done
+mv -f ffmpeg ffprobe ffplay /Easy-Wav2Lip-venv/bin/
+rm -f ffmpeg-6.1.1.zip ffprobe-6.1.1.zip ffplay-6.1.1.zip
 source EW2Lvenv/bin/activate
 git clone https://github.com/anothermartz/Easy-Wav2Lip.git
 cd Easy-Wav2Lip
 pip install -r requirements.txt
 python install.py
+```
+Now to run Easy-Wav2Lip:<br>
+3. Close and reopen terminal then cd to the same directory as in Step 1.<br>
+4. Paste the following code:
+```
+source Easy-Wav2Lip-venv/bin/activate
+cd Easy-Wav2Lip
 ./run_loop.sh
 ```
-
-Linux run after previously installing:
-```
-source EW2Lvenv/bin/activate
-./run_loop.sh
-```
-
-Please let me know if you have success running this on an AMD GPU or an ARM proessor and if you did or didn't do anything special to get it working.
-
-MacOS support may be coming soon.
 
 ## Usage:
 * Once everything is installed, a file called config.ini should pop up.
 * Add the path(s) to your video and audio files here and configure the settings to your liking.<br><br>
        **Pro Tip:**
      * On Windows Hold shift when right clicking on the file you want to use, then press "a" or click "copy as path" and that'll get the path that you can paste as video_file or vocal_file.
+     * MacOS: Right-click on the file, hold Option (Alt) key and select “Copy [filename] as Pathname” from the context menu.
        
 * Save config.ini and close it, this will start the Wav2Lip process and your file will be saved in the same directory as your video_path file.
 * config.ini will open again and you can change inputs and settings.
