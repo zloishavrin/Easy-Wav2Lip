@@ -111,7 +111,6 @@ if output_suffix == "" and not include_settings_in_suffix:
     )
 
 frame_to_preview = max(frame_to_preview - 1, 0)
-print(frame_to_preview)
 
 if include_settings_in_suffix:
     if wav2lip_version == "Wav2Lip_GAN":
