@@ -54,7 +54,7 @@ Easy-Wav2Lip fixes visual bugs on the lips:
 Requirements:
     Nvidia card that supports cuda 12.2
     Or
-    MacOS device that supports mps (macOSTest branch only - please let me know if it works!)
+    MacOS device that supports mps via Apple silicon or AMD GPU
 
 
 ### Automatic installation for Windows 64-bit and x86 processor:
@@ -69,12 +69,11 @@ This should handle the installation of all required components.
 1. Make sure the following are installed and can be accessed via your terminal:
       * Python 3.10 (I have only tested [3.10.11](https://www.python.org/ftp/python/3.10.11/) - other versions may not work!)
       * [Git](https://git-scm.com/)
-      * Windows & Linuz: Cuda (Just having the latest Nvidia drivers will do this, I have only tested 12.2)
-      * MacOS: Untested macOSTest branch avaialble, see instructions below
+      * Windows & Linux: Cuda (Just having the latest Nvidia drivers will do this, I have only tested 12.2)
 
 2. Run the following in your terminal once you've navigated to the folder you want to install Easy-Wav2Lip:
 
-### Windows installation:
+### Windows manual installation:
 Sets up a venv, installs ffmpeg to it and then installs Easy-Wav2Lip:
 1. Open cmd and navigate to the folder you want to install EasyWav2Lip using cd 
 EG:
