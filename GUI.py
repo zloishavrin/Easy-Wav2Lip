@@ -67,6 +67,7 @@ def start_easy_wav2lip():
     config["OPTIONS"]["wav2lip_version"] = str(wav2lip_version_var.get())
     config["OPTIONS"]["use_previous_tracking_data"] = str(use_previous_tracking_data_var.get())
     config["OPTIONS"]["nosmooth"] = str(nosmooth_var.get())
+    config["OPTIONS"]["preview_window"] = str(preview_window_var.get())
     config["PADDING"]["u"] = str(padding_vars["u"].get())
     config["PADDING"]["d"] = str(padding_vars["d"].get())
     config["PADDING"]["l"] = str(padding_vars["l"].get())
@@ -88,7 +89,7 @@ def start_easy_wav2lip():
 
 root = tk.Tk()
 root.title("Easy-Wav2Lip GUI")
-root.geometry("800x700")
+root.geometry("800x720")
 root.configure(bg="lightblue")
 
 # Read the existing config.ini
@@ -186,7 +187,7 @@ output_suffix_entry.grid(row=row, column=1, sticky="w")
 
 include_settings_in_suffix_var = tk.BooleanVar()
 include_settings_in_suffix_var.set(config["OTHER"].get("include_settings_in_suffix", True))  # Set default value
-include_settings_in_suffix_checkbox = tk.Checkbutton(root, text="Include Settings in Suffix", variable=include_settings_in_suffix_var, bg="lightblue")
+include_settings_in_suffix_checkbox = tk.Checkbutton(root, text="Add Settings to Suffix", variable=include_settings_in_suffix_var, bg="lightblue")
 include_settings_in_suffix_checkbox.grid(row=row, column=1, sticky="w", padx=130)
 
 # batch_process
@@ -199,6 +200,16 @@ batch_process_var = tk.BooleanVar()
 batch_process_var.set(config["OTHER"].get("batch_process", True))  # Set default value
 batch_process_checkbox = tk.Checkbutton(root, text="", variable=batch_process_var, bg="lightblue")
 batch_process_checkbox.grid(row=row, column=1, sticky="w")
+
+# Dropdown box for preview window options
+row+=1
+preview_window_label = tk.Label(root, text="Preview Window:", bg="lightblue")
+preview_window_label.grid(row=row, column=0, sticky="e")
+preview_window_options = ["Face", "Full", "Both", "None"]
+preview_window_var = tk.StringVar()
+preview_window_var.set(config["OPTIONS"].get("preview_window", "Face"))
+preview_window_dropdown = tk.OptionMenu(root, preview_window_var, *preview_window_options)
+preview_window_dropdown.grid(row=row, column=1, sticky="w")
 
 row+=1
 tk.Label(root, text="", bg="lightblue").grid(row=row, column=0, sticky="w")
@@ -222,8 +233,19 @@ link.grid(row=row, column=0)
 # Bind the click event to the label
 link.bind("<Button-1>", open_github_link)
 
-# Checkbox for nosmooth option
+# Process one frame only
+preview_settings_var = tk.BooleanVar()
+preview_settings_var.set(config["OTHER"].get("preview_settings", True))  # Set default value
+preview_settings_checkbox = tk.Checkbutton(root, text="Process one frame only - Frame to process:", variable=preview_settings_var, bg="lightblue")
+preview_settings_checkbox.grid(row=row, column=1, sticky="w")
 
+frame_to_preview_var = tk.StringVar()
+frame_to_preview_entry = tk.Entry(root, textvariable=frame_to_preview_var, validate="key", width=3, validatecommand=(root.register(validate_frame_preview), "%P"))
+frame_to_preview_entry.grid(row=row, column=1, sticky="w", padx=255)
+frame_to_preview_var.set(config["OTHER"].get("frame_to_preview", "100"))
+
+# Checkbox for nosmooth option
+row+=1
 nosmooth_var = tk.BooleanVar()
 nosmooth_var.set(config["OPTIONS"].get("nosmooth", True))  # Set default value
 nosmooth_checkbox = tk.Checkbutton(root, text="nosmooth - unticking will smooth face detection between 5 frames", variable=nosmooth_var, bg="lightblue")
@@ -289,7 +311,7 @@ def validate_custom_number(P):
     return False
 
 row+=1
-tk.Label(root, text="Mask settings:", bg="lightblue", font=("Arial", 12)).grid(row=row, column=1, sticky="sw", pady=10)
+tk.Label(root, text="Mask settings:", bg="lightblue", font=("Arial", 12)).grid(row=row, column=1, sticky="sw")
 row+=1
 size_label = tk.Label(root, text="Mask size:", bg="lightblue", padx=50)
 size_label.grid(row=row, column=1, sticky="w")
@@ -331,18 +353,6 @@ debug_mask_var = tk.BooleanVar()
 debug_mask_var.set(config["MASK"].get("debug_mask", True))  # Set default value
 debug_mask_checkbox = tk.Checkbutton(root, text="highlight mask for debugging", variable=debug_mask_var, bg="lightblue", padx=50)
 debug_mask_checkbox.grid(row=row, column=1, sticky="w")
-
-row+=1
-preview_settings_var = tk.BooleanVar()
-preview_settings_var.set(config["OTHER"].get("preview_settings", True))  # Set default value
-preview_settings_checkbox = tk.Checkbutton(root, text="Process one frame only - Frame to process:", variable=preview_settings_var, bg="lightblue")
-preview_settings_checkbox.grid(row=row, column=1, sticky="w")
-    
-
-frame_to_preview_var = tk.StringVar()
-frame_to_preview_entry = tk.Entry(root, textvariable=frame_to_preview_var, validate="key", width=3, validatecommand=(root.register(validate_frame_preview), "%P"))
-frame_to_preview_entry.grid(row=row, column=1, sticky="w", padx=255)
-frame_to_preview_var.set(config["OTHER"].get("frame_to_preview", "100"))
 
 # Increase spacing between all rows (uniformly)
 for row in range(row):
