@@ -474,7 +474,6 @@ def face_detect(images, results_file="last_detected_face.pkl"):
 
     results = []
     pady1, pady2, padx1, padx2 = args.pads
-    from tqdm import tqdm
 
     tqdm = partial(tqdm, position=0, leave=True)
     for image, (rect) in tqdm(
