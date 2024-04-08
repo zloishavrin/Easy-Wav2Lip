@@ -1,13 +1,12 @@
 #!/bin/bash
-while true
-do
-  echo "Opening config.ini - customize accordingly then save and close it to continue!"
-  if command -v nano &> /dev/null
-  then
-    nano config.ini
-  else
-    pico config.ini
-  fi
-  echo "config.ini closed - starting Easy-Wav2Lip..."
-  python run.py
+
+while true; do
+    python GUI.py
+
+    if [ -f "run.txt" ]; then
+        echo "Starting Easy-Wav2Lip..."
+        python run.py
+    else
+        break  # Exit the loop when "run.txt" does not exist
+    fi
 done
