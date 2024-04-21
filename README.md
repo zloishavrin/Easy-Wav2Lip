@@ -46,9 +46,9 @@ Easy-Wav2Lip fixes visual bugs on the lips:
 ### For the easiest and most compatible way to use this tool, use the Google Colab version:
 
 ### Google Colab:
-[https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8.2/Easy_Wav2Lip_v8.2.ipynb](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8.2/Easy_Wav2Lip_v8.2.ipynb)
+[https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8.3/Easy_Wav2Lip_v8.3.ipynb](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8.3/Easy_Wav2Lip_v8.3.ipynb)
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8.2/Easy_Wav2Lip_v8.2.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/anothermartz/Easy-Wav2Lip/blob/v8.3/Easy_Wav2Lip_v8.3.ipynb)
 
 ## Local Installation:
 Requirements:
@@ -58,7 +58,7 @@ Requirements:
 
 
 ### Automatic installation for Windows 64-bit and x86 processor:
-1. Download [Easy-Wav2Lip.bat](https://github.com/anothermartz/Easy-Wav2Lip/releases/download/v8.2/Easy-Wav2Lip.bat)
+1. Download [Easy-Wav2Lip.bat](https://github.com/anothermartz/Easy-Wav2Lip/blob/Installers/Easy-Wav2Lip.bat)
 2. Place it in a folder on your PC (EG: in Documents)
 3. Run it and follow the instructions. It will make a folder called Easy-Wav2Lip within whatever folder you run it from.
 4. Run this file whenever you want to use Easy-Wav2Lip
