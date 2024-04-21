@@ -175,7 +175,7 @@ else:
     if not os.path.exists(vocal_file):
         sys.exit(f"Could not find file: {vocal_file}")
     if os.path.isdir(vocal_file):
-    sys.exit(f"{vocal_file} is a directory, you need to point to a file")
+        sys.exit(f"{vocal_file} is a directory, you need to point to a file")
 
 # Extract each part of the path
 audio_folder, audio_filename_with_extension = os.path.split(vocal_file)
