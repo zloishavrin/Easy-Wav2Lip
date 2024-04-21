@@ -256,6 +256,8 @@ all_mouth_landmarks = []
 
 model = detector = detector_model = None
 
+g_colab = g_colab()
+
 def do_load(checkpoint_path):
     global model, detector, detector_model
     model = load_model(checkpoint_path)
@@ -474,9 +476,9 @@ def face_detect(images, results_file="last_detected_face.pkl"):
 
     results = []
     pady1, pady2, padx1, padx2 = args.pads
-
-    tqdm = partial(tqdm, position=0, leave=True)
-    for image, (rect) in tqdm(
+    
+    tqdm_partial = partial(tqdm, position=0, leave=True)
+    for image, (rect) in tqdm_partial(
         zip(images, face_rect(images)),
         total=len(images),
         desc="detecting face in every frame",
@@ -726,7 +728,7 @@ def main():
 
             f[y1:y2, x1:x2] = p
 
-            if g_colab:
+            if not g_colab:
                 # Display the frame
                 if preview_window == "Face":
                     cv2.imshow("face preview", p)
@@ -742,7 +744,7 @@ def main():
 
             if str(args.preview_settings) == "True":
                 cv2.imwrite("temp/preview.jpg", f)
-                if g_colab():
+                if not g_colab:
                     cv2.imshow("preview", f)
                     if cv2.waitKey(-1) & 0xFF == ord('q'):
                         exit()  # Exit the loop when 'Q' is pressed
