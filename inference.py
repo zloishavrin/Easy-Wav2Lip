@@ -245,18 +245,19 @@ with open(os.path.join("checkpoints", "mouth_detector.pkl"), "rb") as f:
 # creating variables to prevent failing when a face isn't detected
 kernel = last_mask = x = y = w = h = None
 
-# Load the config file
-config = configparser.ConfigParser()
-config.read('config.ini')
+g_colab = g_colab()
 
-# Get the value of the "preview_window" variable
-preview_window = config.get('OPTIONS', 'preview_window')
+if not g_colab:
+  # Load the config file
+  config = configparser.ConfigParser()
+  config.read('config.ini')
+
+  # Get the value of the "preview_window" variable
+  preview_window = config.get('OPTIONS', 'preview_window')
 
 all_mouth_landmarks = []
 
 model = detector = detector_model = None
-
-g_colab = g_colab()
 
 def do_load(checkpoint_path):
     global model, detector, detector_model
@@ -677,7 +678,7 @@ def main():
         tqdm(
             gen,
             total=int(np.ceil(float(len(mel_chunks)) / batch_size)),
-            desc="Processing Wav2Lip - press Q to stop",
+            desc="Processing Wav2Lip",
             ncols=100,
         )
     ):
@@ -731,12 +732,12 @@ def main():
             if not g_colab:
                 # Display the frame
                 if preview_window == "Face":
-                    cv2.imshow("face preview", p)
+                    cv2.imshow("face preview - press Q to abort", p)
                 elif preview_window == "Full":
-                    cv2.imshow("full preview", f)
+                    cv2.imshow("full preview - press Q to abort", f)
                 elif preview_window == "Both":
-                    cv2.imshow("face preview", p)
-                    cv2.imshow("full preview", f)
+                    cv2.imshow("face preview - press Q to abort", p)
+                    cv2.imshow("full preview - press Q to abort", f)
 
                 key = cv2.waitKey(1) & 0xFF
                 if key == ord('q'):
@@ -745,7 +746,7 @@ def main():
             if str(args.preview_settings) == "True":
                 cv2.imwrite("temp/preview.jpg", f)
                 if not g_colab:
-                    cv2.imshow("preview", f)
+                    cv2.imshow("preview - press Q to close", f)
                     if cv2.waitKey(-1) & 0xFF == ord('q'):
                         exit()  # Exit the loop when 'Q' is pressed
 
