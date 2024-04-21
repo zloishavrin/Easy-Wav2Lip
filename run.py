@@ -230,6 +230,7 @@ while True:
 
     # construct output_video
     output_video = os.path.join(folder, output_filename + output_suffix + ".mp4")
+    output_video = os.path.normpath(output_video)
     output_videofile = os.path.basename(output_video)
 
     # remove last outputs
